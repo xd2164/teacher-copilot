@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Teacher {
+  id                String             @id @default(cuid())
+  name              String
+  email             String             @unique
+  school            String?
+  gradesBand        String?
+  subjects          String[]
+  aiConfidenceLevel String             @default("beginner")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  lessonProjects    LessonProject[]
+  uploadedDocuments UploadedDocument[]
+  reflectionNotes   ReflectionNote[]
+  memoryItems       MemoryItem[]
+}
+
+model LessonProject {
+  id              String         @id @default(cuid())
+  teacherId       String
+  teacher         Teacher        @relation(fields: [teacherId], references: [id])
+  title           String
+  subject         String
+  gradeLevel      String
+  status          String         @default("draft")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  lessonDrafts    LessonDraft[]
+  reflections     ReflectionNote[]
+  qualityReviews  QualityReview[]
+}
+
+model LessonDraft {
+  id               String        @id @default(cuid())
+  lessonProjectId  String
+  lessonProject    LessonProject @relation(fields: [lessonProjectId], references: [id])
+  versionNumber    Int           @default(1)
+  lessonJson       Json
+  changeRationale  String?
+  teacherDecisions String[]
+  sourcesUsed      String[]
+  createdAt        DateTime      @default(now())
+}
+
+model UploadedDocument {
+  id              String          @id @default(cuid())
+  teacherId       String
+  teacher         Teacher         @relation(fields: [teacherId], references: [id])
+  fileName        String
+  sourceType      String
+  gradeBand       String?
+  subject         String?
+  status          String          @default("processing")
+  trustLevel      String          @default("medium")
+  includeInSearch Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  chunks          DocumentChunk[]
+}
+
+model DocumentChunk {
+  id           String           @id @default(cuid())
+  documentId   String
+  document     UploadedDocument @relation(fields: [documentId], references: [id])
+  content      String
+  chunkIndex   Int
+  embedding    Float[]
+  metadata     Json
+  createdAt    DateTime         @default(now())
+}
+
+model ReflectionNote {
+  id              String        @id @default(cuid())
+  teacherId       String
+  teacher         Teacher       @relation(fields: [teacherId], references: [id])
+  lessonProjectId String?
+  lessonProject   LessonProject? @relation(fields: [lessonProjectId], references: [id])
+  content         String
+  summary         String?
+  tags            String[]
+  savedToMemory   Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+}
+
+model MemoryItem {
+  id          String   @id @default(cuid())
+  teacherId   String
+  teacher     Teacher  @relation(fields: [teacherId], references: [id])
+  category    String
+  insight     String
+  tags        String[]
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model QualityReview {
+  id              String        @id @default(cuid())
+  lessonProjectId String
+  lessonProject   LessonProject @relation(fields: [lessonProjectId], references: [id])
+  draftVersion    Int
+  readiness       String
+  strengths       String[]
+  weaknesses      String[]
+  requiredRevisions String[]
+  safetyNotes     String[]
+  teacherDecisions String[]
+  reviewedAt      DateTime      @default(now())
+}
