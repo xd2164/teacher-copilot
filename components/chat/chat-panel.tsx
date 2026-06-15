@@ -4,13 +4,15 @@ import Link from "next/link"
 import { ChatMessage, KnowledgeDocument } from "@/lib/types"
 import { MessageBubble } from "./message-bubble"
 import { ChatInput } from "./chat-input"
-import { Bot, BookOpen, ArrowRight } from "lucide-react"
+import { Bot, BookOpen, ArrowRight, Plus } from "lucide-react"
+import { track } from "@/lib/analytics"
 
 interface ChatPanelProps {
   messages: ChatMessage[]
   isGenerating: boolean
   onSendMessage: (content: string) => void
   documents?: KnowledgeDocument[]
+  onUpload?: (file: File) => void
 }
 
 const SUGGESTIONS = [
@@ -39,12 +41,13 @@ function TypingIndicator() {
   )
 }
 
-export function ChatPanel({ messages, isGenerating, onSendMessage, documents }: ChatPanelProps) {
-  const bottomRef   = useRef<HTMLDivElement>(null)
-  const hasUserMsg  = messages.some(m => m.role === "user")
-  const activeDocs  = (documents ?? []).filter(d => d.includeInSearch)
-  const shownDocs   = activeDocs.slice(0, 2)
-  const extraCount  = activeDocs.length - shownDocs.length
+export function ChatPanel({ messages, isGenerating, onSendMessage, documents, onUpload }: ChatPanelProps) {
+  const bottomRef     = useRef<HTMLDivElement>(null)
+  const uploadInputRef = useRef<HTMLInputElement>(null)
+  const hasUserMsg    = messages.some(m => m.role === "user")
+  const activeDocs    = (documents ?? []).filter(d => d.includeInSearch)
+  const shownDocs     = activeDocs.slice(0, 2)
+  const extraCount    = activeDocs.length - shownDocs.length
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -69,6 +72,21 @@ export function ChatPanel({ messages, isGenerating, onSendMessage, documents }: 
             </span>
           ))}
           {extraCount > 0 && <span className="ws-src-more">+{extraCount} more</span>}
+          <input
+            ref={uploadInputRef}
+            type="file"
+            accept=".pdf,.docx,.txt,.md"
+            style={{ display: "none" }}
+            onChange={e => {
+              const f = e.target.files?.[0]
+              if (f && onUpload) { onUpload(f); e.target.value = "" }
+            }}
+          />
+          {onUpload && (
+            <button className="ws-src-upload" onClick={() => uploadInputRef.current?.click()}>
+              <Plus style={{ width: 9, height: 9 }} /> Add source
+            </button>
+          )}
           <Link href="/library" className="ws-src-link">
             Manage <ArrowRight />
           </Link>
@@ -92,7 +110,7 @@ export function ChatPanel({ messages, isGenerating, onSendMessage, documents }: 
       {!hasUserMsg && (
         <div className="ws-suggests">
           {SUGGESTIONS.map(s => (
-            <button key={s} className="ws-sug" onClick={() => onSendMessage(s)}>
+            <button key={s} className="ws-sug" onClick={() => { track("suggestion_clicked", { label: s }); onSendMessage(s) }}>
               {s}
             </button>
           ))}

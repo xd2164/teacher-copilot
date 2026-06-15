@@ -1,8 +1,9 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import Link from "next/link"
-import { Pencil, BookOpen, FileText, Plus, Check, Upload, Presentation } from "lucide-react"
+import { Pencil, BookOpen, FileText, Plus, Check, Upload, Presentation, Users } from "lucide-react"
 import { DEMO_DOCUMENTS } from "@/lib/demo-data"
+import { KnowledgeDocument } from "@/lib/types"
 
 const FILTER_OPTIONS = [
   { id: "all",  label: "All"             },
@@ -35,6 +36,7 @@ function getDocType(sourceType: string): { label: string; iconClass: "pdf" | "do
     case "policy":                return { label: "School AI Policy",     iconClass: "pdf" }
     case "ai_literacy_framework": return { label: "AI Literacy Framework",iconClass: "pdf" }
     case "standard":              return { label: "Academic Standards",   iconClass: "pdf" }
+    case "upload":                return { label: "Uploaded Resource",    iconClass: "doc" }
     default:                      return { label: sourceType,             iconClass: "doc" }
   }
 }
@@ -46,15 +48,34 @@ const RECENT_LESSONS = [
 ]
 
 export default function LibraryPage() {
-  const [activeFilter, setActiveFilter]   = useState("all")
-  const [selectedDocId, setSelectedDocId] = useState<string | null>(null)
+  const [activeFilter, setActiveFilter]     = useState("all")
+  const [selectedDocId, setSelectedDocId]   = useState<string | null>(null)
+  const [uploadedDocs, setUploadedDocs]     = useState<KnowledgeDocument[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const filtered = DEMO_DOCUMENTS.filter(d => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const newDoc: KnowledgeDocument = {
+      id: `upload-${Date.now()}`,
+      fileName: file.name,
+      sourceType: "upload",
+      status: "ready",
+      trustLevel: "medium",
+      includeInSearch: true,
+    }
+    setUploadedDocs(prev => [...prev, newDoc])
+    setSelectedDocId(newDoc.id)
+    e.target.value = ""
+  }
+
+  const allDocs  = [...DEMO_DOCUMENTS, ...uploadedDocs]
+  const filtered = allDocs.filter(d => {
     if (activeFilter === "all") return true
     return DOC_FILTER_MAP[d.sourceType] === activeFilter
   })
 
-  const selectedDoc = selectedDocId ? DEMO_DOCUMENTS.find(d => d.id === selectedDocId) ?? null : null
+  const selectedDoc = selectedDocId ? allDocs.find(d => d.id === selectedDocId) ?? null : null
 
   return (
     <>
@@ -67,8 +88,8 @@ export default function LibraryPage() {
         </div>
         <div className="ws-nav-links">
           <button className="ws-btn on"><BookOpen /> Library</button>
+          <Link href="/community" className="ws-btn"><Users /> Community</Link>
           <Link href="/" className="ws-btn"><Presentation /> Demo</Link>
-          <Link href="/lesson/new" className="ws-btn"><Pencil /> Lesson</Link>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
         </div>
       </nav>
@@ -117,11 +138,18 @@ export default function LibraryPage() {
               )
             })}
 
-            <div className="lib-upl">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.docx,.txt,.md"
+              style={{ display: "none" }}
+              onChange={handleFileUpload}
+            />
+            <button className="lib-upl" onClick={() => fileInputRef.current?.click()}>
               <Upload />
               <span>Upload a resource</span>
               <span style={{ fontSize: 11, color: "var(--t3)" }}>PDF, DOCX, or TXT</span>
-            </div>
+            </button>
           </div>
         </div>
 

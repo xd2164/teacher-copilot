@@ -6,7 +6,8 @@ import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
 import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW } from "@/lib/demo-data"
 import { ChatMessage, LessonDraft, KnowledgeDocument } from "@/lib/types"
 import { getDemoResponse } from "@/lib/demo-responses"
-import { BookOpen, Pencil, Presentation, Plus } from "lucide-react"
+import { BookOpen, Pencil, Presentation, Plus, Users } from "lucide-react"
+import { track } from "@/lib/analytics"
 
 export function AppShell() {
   const [messages, setMessages]       = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
@@ -42,10 +43,10 @@ export function AppShell() {
 
     if (demoReply.updatedDraft) {
       setCurrentDraft(demoReply.updatedDraft)
-      // Auto-switch to Lesson tab and flash the updated indicator
       setActiveView("draft")
       setLessonUpdated(true)
       setTimeout(() => setLessonUpdated(false), 2200)
+      track("lesson_updated")
     }
 
     setIsGenerating(false)
@@ -56,6 +57,19 @@ export function AppShell() {
       prev.map(d => d.id === docId ? { ...d, includeInSearch: !d.includeInSearch } : d)
     )
   }
+
+  const handleDocumentUpload = useCallback((file: File) => {
+    const newDoc: KnowledgeDocument = {
+      id: `upload-${Date.now()}`,
+      fileName: file.name,
+      sourceType: "upload",
+      status: "ready",
+      trustLevel: "medium",
+      includeInSearch: true,
+    }
+    setDocuments(prev => [...prev, newDoc])
+    track("document_uploaded", { file_type: file.name.split(".").pop() ?? "unknown" })
+  }, [])
 
   return (
     <>
@@ -70,6 +84,7 @@ export function AppShell() {
         </div>
         <div className="ws-nav-links">
           <Link href="/library" className="ws-btn"><BookOpen /> Library</Link>
+          <Link href="/community" className="ws-btn"><Users /> Community</Link>
           <Link href="/" className="ws-btn"><Presentation /> Demo</Link>
           <button className="ws-btn on"><Pencil /> Lesson</button>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
@@ -83,6 +98,7 @@ export function AppShell() {
             isGenerating={isGenerating}
             onSendMessage={handleSendMessage}
             documents={documents}
+            onUpload={handleDocumentUpload}
           />
         </div>
         <div className="les-col">

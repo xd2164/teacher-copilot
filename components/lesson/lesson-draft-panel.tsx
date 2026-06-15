@@ -6,7 +6,8 @@ import { TeacherMovesView } from "./teacher-moves-view"
 import { DraftTimelineView } from "./draft-timeline-view"
 import { DesignSpaceView } from "./design-space-view"
 import { QualityReviewView } from "./quality-review-view"
-import { Download, Copy, Check } from "lucide-react"
+import { Download, Copy, Check, Share2, X } from "lucide-react"
+import { track } from "@/lib/analytics"
 
 type ActiveView = "draft" | "teacher-moves" | "timeline" | "design-space" | "quality"
 
@@ -31,9 +32,11 @@ const TABS = [
 export function LessonDraftPanel({
   draft, teacherMoves, revisions, qualityReview, activeView, onViewChange, justUpdated,
 }: LessonDraftPanelProps) {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied]       = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
 
   const handleExportMarkdown = () => {
+    track("lesson_exported")
     const md = generateMarkdown(draft)
     const blob = new Blob([md], { type: "text/markdown" })
     const url = URL.createObjectURL(blob)
@@ -45,6 +48,7 @@ export function LessonDraftPanel({
   }
 
   const handleCopy = async () => {
+    track("lesson_copied")
     await navigator.clipboard.writeText(generateMarkdown(draft))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -97,7 +101,40 @@ export function LessonDraftPanel({
         <button className="ws-btn" style={{ flex: 1, justifyContent: "center" }} onClick={handleCopy}>
           <Copy /> {copied ? "Copied!" : "Copy"}
         </button>
+        <button className="ws-btn" style={{ justifyContent: "center" }} onClick={() => setShareOpen(true)}>
+          <Share2 /> Share
+        </button>
       </div>
+
+      {shareOpen && (
+        <div className="ws-modal-overlay" role="dialog" aria-modal="true"
+          onClick={e => e.target === e.currentTarget && setShareOpen(false)}>
+          <div className="ws-modal">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.125rem" }}>
+              <div>
+                <p className="ws-modal-title">Share to Community</p>
+                <p className="ws-modal-sub">Help other teachers by sharing this lesson</p>
+              </div>
+              <button className="ws-modal-x" onClick={() => setShareOpen(false)} aria-label="Close">
+                <X style={{ width: 15, height: 15 }} />
+              </button>
+            </div>
+            <label className="ws-modal-label">Lesson title</label>
+            <input className="ws-modal-input" defaultValue={draft.lessonTitle} readOnly />
+            <label className="ws-modal-label">Grade & subject</label>
+            <input className="ws-modal-input" defaultValue={`${draft.gradeLevel} · ${draft.subject}`} readOnly />
+            <label className="ws-modal-label" htmlFor="share-desc">What makes this lesson special?</label>
+            <textarea id="share-desc" className="ws-modal-ta"
+              placeholder="Brief description for the community…" />
+            <div className="ws-modal-actions">
+              <button className="ws-modal-cancel" onClick={() => setShareOpen(false)}>Cancel</button>
+              <button className="ws-modal-ok" onClick={() => { track("lesson_shared"); setShareOpen(false) }}>
+                <Share2 style={{ width: 12, height: 12 }} /> Share lesson
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

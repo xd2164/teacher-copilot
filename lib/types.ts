@@ -12,7 +12,7 @@ export type DocumentStatus = "uploading" | "processing" | "ready" | "needs_revie
 export type KnowledgeDocument = {
   id: string
   fileName: string
-  sourceType: "curriculum_map" | "prior_feedback" | "policy" | "lesson_plan" | "standard" | "student_work" | "ai_literacy_framework" | "reflection"
+  sourceType: "curriculum_map" | "prior_feedback" | "policy" | "lesson_plan" | "standard" | "student_work" | "ai_literacy_framework" | "reflection" | "upload"
   status: DocumentStatus
   gradeBand?: string
   subject?: string
