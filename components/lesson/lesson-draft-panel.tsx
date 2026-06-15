@@ -6,9 +6,7 @@ import { TeacherMovesView } from "./teacher-moves-view"
 import { DraftTimelineView } from "./draft-timeline-view"
 import { DesignSpaceView } from "./design-space-view"
 import { QualityReviewView } from "./quality-review-view"
-import { readinessColor } from "@/lib/utils"
-import { Download, Copy, FileText, Zap, Clock, Map, ShieldCheck } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Download, Copy } from "lucide-react"
 
 type ActiveView = "draft" | "teacher-moves" | "timeline" | "design-space" | "quality"
 
@@ -22,11 +20,11 @@ interface LessonDraftPanelProps {
 }
 
 const TABS = [
-  { id: "draft" as ActiveView,        icon: FileText,    label: "Lesson"        },
-  { id: "teacher-moves" as ActiveView, icon: Zap,        label: "Moves"         },
-  { id: "timeline" as ActiveView,      icon: Clock,      label: "History"       },
-  { id: "design-space" as ActiveView,  icon: Map,        label: "Design Space"  },
-  { id: "quality" as ActiveView,       icon: ShieldCheck, label: "Quality"      },
+  { id: "draft" as ActiveView,         label: "Lesson"       },
+  { id: "teacher-moves" as ActiveView, label: "Moves"        },
+  { id: "timeline" as ActiveView,      label: "History"      },
+  { id: "design-space" as ActiveView,  label: "Design Space" },
+  { id: "quality" as ActiveView,       label: "Quality"      },
 ]
 
 export function LessonDraftPanel({
@@ -52,50 +50,31 @@ export function LessonDraftPanel({
   }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Lesson header */}
-      <div className="px-5 pt-4 pb-3 bg-white border-b border-gray-200 shadow-sm">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="min-w-0 flex-1">
-            <h2 className="text-base font-semibold text-gray-900 leading-snug">
-              {draft.lessonTitle || "Lesson Draft"}
-            </h2>
-            <p className="text-sm text-gray-500 mt-0.5">
-              {draft.gradeLevel} · {draft.subject} · {draft.duration}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className={cn("text-xs px-2.5 py-1 rounded-full border font-semibold", readinessColor(qualityReview.readiness))}>
-              {qualityReview.readiness === "ready" ? "Ready" : qualityReview.readiness === "needs_revision" ? "Review" : "Not Ready"}
-            </span>
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-medium">
-              v{draft.versionNumber}
-            </span>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-1">
-          {TABS.map(({ id, icon: Icon, label }) => (
-            <button
-              key={id}
-              onClick={() => onViewChange(id)}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap",
-                activeView === id
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-            </button>
-          ))}
+    <>
+      <div className="les-head">
+        <span className="les-chap">Lesson plan · v{draft.versionNumber}</span>
+        <h2 className="les-title">{draft.lessonTitle}</h2>
+        <div className="les-meta">
+          <span className="les-tag">{draft.gradeLevel}</span>
+          <span className="les-tag">{draft.subject}</span>
+          <span className="les-tag">{draft.duration}</span>
+          <span className="ws-bdg tl">Current</span>
         </div>
       </div>
 
-      {/* View content */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin bg-gray-50">
+      <div className="les-tabs">
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            className={`les-tab${activeView === tab.id ? " on" : ""}`}
+            onClick={() => onViewChange(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="les-tp scrollbar-thin">
         {activeView === "draft" && <LessonDraftView draft={draft} />}
         {activeView === "teacher-moves" && <TeacherMovesView moves={teacherMoves} />}
         {activeView === "timeline" && <DraftTimelineView revisions={revisions} />}
@@ -103,24 +82,15 @@ export function LessonDraftPanel({
         {activeView === "quality" && <QualityReviewView review={qualityReview} />}
       </div>
 
-      {/* Export footer */}
-      <div className="border-t border-gray-200 bg-white px-4 py-3 flex gap-2">
-        <button
-          onClick={handleExportMarkdown}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Export .md
+      <div className="les-lfoot">
+        <button className="ws-btn" style={{ flex: 1, justifyContent: "center" }} onClick={handleExportMarkdown}>
+          <Download /> Export .md
         </button>
-        <button
-          onClick={handleCopy}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          <Copy className="w-4 h-4" />
-          {copied ? "Copied!" : "Copy"}
+        <button className="ws-btn" style={{ flex: 1, justifyContent: "center" }} onClick={handleCopy}>
+          <Copy /> {copied ? "Copied!" : "Copy"}
         </button>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Lora } from "next/font/google"
 import "./globals.css"
 
 const inter = Inter({
@@ -7,6 +7,14 @@ const inter = Inter({
   weight: ["400", "500"],
   display: "swap",
   variable: "--font-inter",
+})
+
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-lora",
 })
 
 export const metadata: Metadata = {
@@ -20,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${lora.variable}`}>
       <body>{children}</body>
     </html>
   )

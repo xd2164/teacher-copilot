@@ -1,13 +1,12 @@
 "use client"
 import React, { useState } from "react"
 import Link from "next/link"
-import { KnowledgeLibrary } from "@/components/knowledge-library/knowledge-library"
 import { ChatPanel } from "@/components/chat/chat-panel"
 import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
 import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW } from "@/lib/demo-data"
 import { ChatMessage, LessonDraft, KnowledgeDocument } from "@/lib/types"
 import { getDemoResponse } from "@/lib/demo-responses"
-import { BookOpen, Sparkles, ArrowLeft } from "lucide-react"
+import { BookOpen, Pencil } from "lucide-react"
 
 export function AppShell() {
   const [messages, setMessages] = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
@@ -62,53 +61,33 @@ export function AppShell() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      {/* Top nav */}
-      <header className="flex-shrink-0 h-12 bg-white border-b border-gray-200 flex items-center justify-between px-4 shadow-sm z-10">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-700 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Home</span>
+    <>
+      <nav className="ws-nav">
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Link href="/" className="ws-logo">
+            <div className="ws-logo-mark"><Pencil /></div>
+            <span className="ws-logo-text">Teacher Co-Pilot</span>
           </Link>
-          <span className="text-gray-200 text-lg">·</span>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-sm font-semibold text-gray-800">Design–Create–Reflect Co-Pilot</span>
-          </div>
+          <span className="ws-nav-sep">/</span>
+          <span className="ws-nav-crumb">New lesson</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href="/library" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors">
-            <BookOpen className="w-4 h-4" />
-            Library
-          </Link>
-          <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full font-medium">Demo</span>
+        <div className="ws-nav-links">
+          <Link href="/library" className="ws-btn"><BookOpen /> Library</Link>
+          <span className="ws-bdg tl">Demo</span>
         </div>
-      </header>
+      </nav>
 
-      {/* Three-column workspace */}
-      <div className="flex flex-1 min-h-0">
-        {/* Left: Knowledge Library */}
-        <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white overflow-hidden flex flex-col">
-          <KnowledgeLibrary
-            documents={documents}
-            onUpload={handleDocumentUpload}
-            onToggle={handleToggleDocument}
-          />
-        </div>
-
-        {/* Center: Chat */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden border-r border-gray-200">
+      <div className="ws-screen">
+        {/* Left: chat column */}
+        <div className="chat-col">
           <ChatPanel
             messages={messages}
             isGenerating={isGenerating}
             onSendMessage={handleSendMessage}
           />
         </div>
-
-        {/* Right: Lesson Draft */}
-        <div className="w-[460px] flex-shrink-0 bg-white overflow-hidden flex flex-col">
+        {/* Right: lesson column */}
+        <div className="les-col">
           <LessonDraftPanel
             draft={currentDraft}
             teacherMoves={DEMO_TEACHER_MOVES}
@@ -119,6 +98,6 @@ export function AppShell() {
           />
         </div>
       </div>
-    </div>
+    </>
   )
 }
