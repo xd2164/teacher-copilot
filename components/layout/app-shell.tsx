@@ -5,6 +5,7 @@ import { ChatPanel } from "@/components/chat/chat-panel"
 import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
 import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW } from "@/lib/demo-data"
 import { ChatMessage, LessonDraft, KnowledgeDocument } from "@/lib/types"
+import { getDemoResponse } from "@/lib/demo-responses"
 
 export function AppShell() {
   const [messages, setMessages] = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
@@ -23,48 +24,27 @@ export function AppShell() {
     setMessages(prev => [...prev, userMessage])
     setIsGenerating(true)
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map(m => ({
-            role: m.role,
-            content: m.content,
-          })),
-          currentDraft,
-          documents: documents.filter(d => d.includeInSearch),
-        }),
-      })
+    // Simulate network delay for realistic feel
+    await new Promise(r => setTimeout(r, 900 + Math.random() * 600))
 
-      if (!response.ok) throw new Error("Chat request failed")
+    // Static demo mode: use local simulated responses (no API call needed)
+    const demoReply = getDemoResponse(content, currentDraft)
 
-      const data = await response.json()
-
-      const assistantMessage: ChatMessage = {
-        id: `msg-${Date.now() + 1}`,
-        role: "assistant",
-        content: data.message,
-        timestamp: new Date(),
-        stage: data.stage,
-        retrievalSummary: data.retrievalSummary,
-      }
-      setMessages(prev => [...prev, assistantMessage])
-
-      if (data.updatedDraft) {
-        setCurrentDraft(data.updatedDraft)
-      }
-    } catch {
-      const errorMessage: ChatMessage = {
-        id: `msg-error-${Date.now()}`,
-        role: "assistant",
-        content: "I encountered an issue. Please check your API key in .env.local and try again.",
-        timestamp: new Date(),
-      }
-      setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setIsGenerating(false)
+    const assistantMessage: ChatMessage = {
+      id: `msg-${Date.now() + 1}`,
+      role: "assistant",
+      content: demoReply.message,
+      timestamp: new Date(),
+      stage: demoReply.stage,
+      retrievalSummary: demoReply.retrievalSummary,
     }
+    setMessages(prev => [...prev, assistantMessage])
+
+    if (demoReply.updatedDraft) {
+      setCurrentDraft(demoReply.updatedDraft)
+    }
+
+    setIsGenerating(false)
   }
 
   const handleDocumentUpload = (doc: KnowledgeDocument) => {
