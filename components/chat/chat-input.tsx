@@ -45,7 +45,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         onChange={handleInput}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        placeholder={placeholder || "Message your co-pilot..."}
+        placeholder={placeholder || "Ask to revise, add a section, adjust…"}
         rows={1}
       />
       <button

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import Link from "next/link"
 import { ChatPanel } from "@/components/chat/chat-panel"
 import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
@@ -9,13 +9,14 @@ import { getDemoResponse } from "@/lib/demo-responses"
 import { BookOpen, Pencil, Presentation, Plus } from "lucide-react"
 
 export function AppShell() {
-  const [messages, setMessages] = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
+  const [messages, setMessages]       = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
   const [currentDraft, setCurrentDraft] = useState<LessonDraft>(DEMO_LESSON)
-  const [documents, setDocuments] = useState<KnowledgeDocument[]>(DEMO_DOCUMENTS)
+  const [documents, setDocuments]     = useState<KnowledgeDocument[]>(DEMO_DOCUMENTS)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [activeView, setActiveView] = useState<"draft" | "teacher-moves" | "timeline" | "design-space" | "quality">("draft")
+  const [activeView, setActiveView]   = useState<"draft" | "teacher-moves" | "timeline" | "design-space" | "quality">("draft")
+  const [lessonUpdated, setLessonUpdated] = useState(false)
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = useCallback(async (content: string) => {
     const userMessage: ChatMessage = {
       id: `msg-${Date.now()}`,
       role: "user",
@@ -41,18 +42,14 @@ export function AppShell() {
 
     if (demoReply.updatedDraft) {
       setCurrentDraft(demoReply.updatedDraft)
+      // Auto-switch to Lesson tab and flash the updated indicator
+      setActiveView("draft")
+      setLessonUpdated(true)
+      setTimeout(() => setLessonUpdated(false), 2200)
     }
 
     setIsGenerating(false)
-  }
-
-  const handleDocumentUpload = (doc: KnowledgeDocument) => {
-    setDocuments(prev => {
-      const existing = prev.find(d => d.id === doc.id)
-      if (existing) return prev.map(d => d.id === doc.id ? doc : d)
-      return [...prev, doc]
-    })
-  }
+  }, [currentDraft])
 
   const handleToggleDocument = (docId: string) => {
     setDocuments(prev =>
@@ -80,15 +77,14 @@ export function AppShell() {
       </nav>
 
       <div className="ws-screen">
-        {/* Left: chat column */}
         <div className="chat-col">
           <ChatPanel
             messages={messages}
             isGenerating={isGenerating}
             onSendMessage={handleSendMessage}
+            documents={documents}
           />
         </div>
-        {/* Right: lesson column */}
         <div className="les-col">
           <LessonDraftPanel
             draft={currentDraft}
@@ -97,6 +93,7 @@ export function AppShell() {
             qualityReview={DEMO_QUALITY_REVIEW}
             activeView={activeView}
             onViewChange={setActiveView}
+            justUpdated={lessonUpdated}
           />
         </div>
       </div>

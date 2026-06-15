@@ -807,6 +807,59 @@ body {
   border-top: 1px solid var(--bd); padding-top: .5rem; font-style: italic;
 }
 
+/* ── UX: Lesson-updated badge ─────────────────────────── */
+@keyframes ws-badge-pop {
+  0%   { opacity: 0; transform: translateY(-2px); }
+  12%  { opacity: 1; transform: translateY(0); }
+  72%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.ws-updated-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600;
+  color: var(--tl); background: var(--tll); border: 1px solid var(--tl);
+  border-radius: 3px; padding: 2px 7px;
+  animation: ws-badge-pop 2s ease-in-out forwards;
+  pointer-events: none;
+}
+.ws-updated-badge svg { width: 10px; height: 10px; }
+
+/* ── UX: Sources-in-context row ───────────────────────── */
+.ws-sources {
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  padding: 5px 1.125rem; background: var(--nvl);
+  border-bottom: 1px solid var(--nvm); flex-shrink: 0;
+}
+.ws-src-label { font-size: 10px; font-weight: 600; color: var(--nv); flex-shrink: 0; }
+.ws-src-chip {
+  font-size: 10px; color: var(--nv); background: var(--wh);
+  border: 1px solid var(--nvm); border-radius: 3px;
+  padding: 1px 6px; max-width: 120px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ws-src-more { font-size: 10px; color: var(--t3); flex-shrink: 0; }
+.ws-src-link {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 10px; font-weight: 500; color: var(--nv);
+  text-decoration: none; display: flex; align-items: center; gap: 2px;
+}
+.ws-src-link:hover { text-decoration: underline; }
+.ws-src-link svg { width: 10px; height: 10px; }
+
+/* ── UX: Suggestion chips ─────────────────────────────── */
+.ws-suggests {
+  padding: 6px 1.125rem 8px; display: flex; gap: 5px;
+  flex-wrap: wrap; flex-shrink: 0;
+  border-top: 1px solid var(--bd); background: var(--wh);
+}
+.ws-sug {
+  font-size: 11px; color: var(--nv); background: var(--nvl);
+  border: 1px solid var(--nvm); border-radius: 100px;
+  padding: 3px 10px; cursor: pointer; font-family: inherit;
+  white-space: nowrap; transition: background .1s;
+}
+.ws-sug:hover { background: var(--nvm); }
+
 /* Why this lesson */
 .ws-why-quote {
   background: var(--nvl); border-left: 3px solid var(--nv);

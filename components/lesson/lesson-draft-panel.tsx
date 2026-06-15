@@ -6,7 +6,7 @@ import { TeacherMovesView } from "./teacher-moves-view"
 import { DraftTimelineView } from "./draft-timeline-view"
 import { DesignSpaceView } from "./design-space-view"
 import { QualityReviewView } from "./quality-review-view"
-import { Download, Copy } from "lucide-react"
+import { Download, Copy, Check } from "lucide-react"
 
 type ActiveView = "draft" | "teacher-moves" | "timeline" | "design-space" | "quality"
 
@@ -17,6 +17,7 @@ interface LessonDraftPanelProps {
   qualityReview: QualityReview
   activeView: ActiveView
   onViewChange: (view: ActiveView) => void
+  justUpdated?: boolean
 }
 
 const TABS = [
@@ -28,7 +29,7 @@ const TABS = [
 ]
 
 export function LessonDraftPanel({
-  draft, teacherMoves, revisions, qualityReview, activeView, onViewChange,
+  draft, teacherMoves, revisions, qualityReview, activeView, onViewChange, justUpdated,
 }: LessonDraftPanelProps) {
   const [copied, setCopied] = useState(false)
 
@@ -52,7 +53,14 @@ export function LessonDraftPanel({
   return (
     <>
       <div className="les-head">
-        <span className="les-chap">Lesson plan · v{draft.versionNumber}</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+          <span className="les-chap">Lesson plan · v{draft.versionNumber}</span>
+          {justUpdated && (
+            <span className="ws-updated-badge" key={draft.versionNumber}>
+              <Check /> Updated
+            </span>
+          )}
+        </div>
         <h2 className="les-title">{draft.lessonTitle}</h2>
         <div className="les-meta">
           <span className="les-tag">{draft.gradeLevel}</span>

@@ -294,7 +294,7 @@ export const DEMO_INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: "msg-0",
     role: "assistant",
-    content: "Hi! I'm your Design–Create–Reflect Co-Pilot. What lesson are you planning?",
+    content: "Hi! I'm your Design–Create–Reflect Co-Pilot.\n\nYour lesson plan builds in the panel on the right ↗ as we chat. Try the suggestions below, or tell me what you're teaching.",
     timestamp: new Date("2024-01-15T09:00:00"),
     stage: "understand",
   },
