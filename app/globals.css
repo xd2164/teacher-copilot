@@ -296,8 +296,14 @@ body {
 .lp-footer {
   border-top: 0.5px solid var(--border);
   padding: 1.25rem 2rem;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; flex-direction: column; gap: 6px;
   font-size: 12px; color: var(--text-tertiary);
+}
+.lp-footer-row {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+}
+.lp-footer-cite {
+  font-size: 11px; color: var(--text-tertiary); line-height: 1.5;
 }
 
 /* ── Responsive ─────────────────────────────────────────── */
@@ -308,7 +314,8 @@ body {
   .lp-compare-grid { grid-template-columns: 1fr; }
   .lp-nav-ghost { display: none; }
   .lp-cta-wrap { padding: 0 1.25rem 2.5rem; }
-  .lp-footer { flex-direction: column; gap: 4px; text-align: center; }
+  .lp-footer { gap: 4px; text-align: center; }
+  .lp-footer-row { flex-direction: column; gap: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1069,3 +1076,8 @@ body {
 .cm-share-btn:hover { background: rgba(255,255,255,.25); }
 .cm-share-btn.pri { background: #fff; color: var(--nv); border-color: #fff; }
 .cm-share-btn.pri:hover { background: var(--nvl); }
+.cm-cite {
+  font-size: 11px; color: var(--t3); line-height: 1.6;
+  padding: 1rem 0 .25rem; border-top: 1px solid var(--bd);
+  margin-top: 2.5rem;
+}

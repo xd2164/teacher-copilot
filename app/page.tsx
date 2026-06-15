@@ -169,8 +169,13 @@ export default function HomePage() {
 
       {/* ── Footer ── */}
       <footer className="lp-footer">
-        <span>Teacher Co-Pilot · Design · Create · Reflect</span>
-        <span>Built for K–12 educators</span>
+        <div className="lp-footer-row">
+          <span>Teacher Co-Pilot · Design · Create · Reflect</span>
+          <span>Built for K–12 educators</span>
+        </div>
+        <p className="lp-footer-cite">
+          Lyublinskaya, I., &amp; Du, X. (2025). <em>Teaching AI literacy across the curriculum: A K–12 handbook.</em> Corwin.
+        </p>
       </footer>
     </>
   )

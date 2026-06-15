@@ -152,6 +152,11 @@ export default function CommunityPage() {
             ))}
           </div>
 
+          {/* Reference citation */}
+          <p className="cm-cite">
+            Lyublinskaya, I., &amp; Du, X. (2025). <em>Teaching AI literacy across the curriculum: A K–12 handbook.</em> Corwin.
+          </p>
+
           {/* Share CTA */}
           <div className="cm-share-cta">
             <h2 className="cm-share-h">Share your lesson with the community</h2>
