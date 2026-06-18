@@ -6,6 +6,7 @@ import { TeacherMovesView } from "./teacher-moves-view"
 import { DraftTimelineView } from "./draft-timeline-view"
 import { DesignSpaceView } from "./design-space-view"
 import { QualityReviewView } from "./quality-review-view"
+import { LessonIntakeForm } from "./lesson-intake-form"
 import { Download, Copy, Check, Share2, X } from "lucide-react"
 import { track } from "@/lib/analytics"
 
@@ -19,6 +20,7 @@ interface LessonDraftPanelProps {
   activeView: ActiveView
   onViewChange: (view: ActiveView) => void
   justUpdated?: boolean
+  onGenerateLesson: (draft: LessonDraft) => void
 }
 
 const TABS = [
@@ -30,7 +32,7 @@ const TABS = [
 ]
 
 export function LessonDraftPanel({
-  draft, teacherMoves, revisions, qualityReview, activeView, onViewChange, justUpdated,
+  draft, teacherMoves, revisions, qualityReview, activeView, onViewChange, justUpdated, onGenerateLesson,
 }: LessonDraftPanelProps) {
   const [copied, setCopied]       = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
@@ -87,11 +89,17 @@ export function LessonDraftPanel({
       </div>
 
       <div className="les-tp scrollbar-thin">
-        {activeView === "draft" && <LessonDraftView draft={draft} />}
-        {activeView === "teacher-moves" && <TeacherMovesView moves={teacherMoves} />}
-        {activeView === "timeline" && <DraftTimelineView revisions={revisions} />}
-        {activeView === "design-space" && <DesignSpaceView draft={draft} />}
-        {activeView === "quality" && <QualityReviewView review={qualityReview} />}
+        {activeView === "draft" && draft.lessonTitle === "" ? (
+          <LessonIntakeForm onGenerate={onGenerateLesson} />
+        ) : (
+          <>
+            {activeView === "draft" && <LessonDraftView draft={draft} />}
+            {activeView === "teacher-moves" && <TeacherMovesView moves={teacherMoves} />}
+            {activeView === "timeline" && <DraftTimelineView revisions={revisions} />}
+            {activeView === "design-space" && <DesignSpaceView draft={draft} />}
+            {activeView === "quality" && <QualityReviewView review={qualityReview} />}
+          </>
+        )}
       </div>
 
       <div className="les-lfoot">

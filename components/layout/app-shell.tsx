@@ -54,6 +54,21 @@ export function AppShell({ isNew = false }: { isNew?: boolean }) {
     setIsGenerating(false)
   }, [currentDraft])
 
+  const handleGenerateLesson = useCallback((draft: LessonDraft) => {
+    setCurrentDraft(draft)
+    const msg: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      role: "assistant",
+      content: `I've drafted your **${draft.lessonTitle}** lesson. Here's what I built:\n\n- ${draft.aiLiteracyGoals.length} AI literacy goals\n- Design → Create → Reflect phases\n- ${draft.createPhase.studentSteps.length} student activity steps\n- Discussion prompts and exit ticket\n\nAsk me to refine any part — make it more hands-on, add ethics discussion, shorten it, add multilingual supports, or export it.`,
+      timestamp: new Date(),
+      stage: "generate",
+    }
+    setMessages(prev => [...prev, msg])
+    setLessonUpdated(true)
+    setTimeout(() => setLessonUpdated(false), 2200)
+    track("lesson_updated")
+  }, [])
+
   const handleToggleDocument = (docId: string) => {
     setDocuments(prev =>
       prev.map(d => d.id === docId ? { ...d, includeInSearch: !d.includeInSearch } : d)
@@ -96,6 +111,7 @@ export function AppShell({ isNew = false }: { isNew?: boolean }) {
             activeView={activeView}
             onViewChange={setActiveView}
             justUpdated={lessonUpdated}
+            onGenerateLesson={handleGenerateLesson}
           />
         </div>
       </div>
