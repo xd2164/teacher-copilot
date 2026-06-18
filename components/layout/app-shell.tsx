@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useCallback } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ChatPanel } from "@/components/chat/chat-panel"
 import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
 import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW } from "@/lib/demo-data"
@@ -10,6 +11,7 @@ import { BookOpen, Pencil, Plus } from "lucide-react"
 import { track } from "@/lib/analytics"
 
 export function AppShell() {
+  const router = useRouter()
   const [messages, setMessages]       = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
   const [currentDraft, setCurrentDraft] = useState<LessonDraft>(DEMO_LESSON)
   const [documents, setDocuments]     = useState<KnowledgeDocument[]>(DEMO_DOCUMENTS)
@@ -72,7 +74,7 @@ export function AppShell() {
         <div className="ws-nav-links">
           <Link href="/library" className="ws-btn"><BookOpen /> Library</Link>
           <button className="ws-btn on"><Pencil /> Lesson</button>
-          <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
+          <button className="ws-btn cta" onClick={() => router.push(`/lesson/new?t=${Date.now()}`)}><Plus /> New lesson</button>
         </div>
       </nav>
 
