@@ -88,7 +88,7 @@ export default function LibraryPage() {
         </div>
         <div className="ws-nav-links">
           <button className="ws-btn on"><BookOpen /> Library</button>
-<Link href="/" className="ws-btn"><Presentation /> Demo</Link>
+          <Link href="/community" className="ws-btn"><Users /> Community</Link>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
         </div>
       </nav>

@@ -35,6 +35,7 @@ export default function CommunityPage() {
         </div>
         <div className="ws-nav-links">
           <Link href="/library" className="ws-btn"><BookOpen /> Library</Link>
+          <button className="ws-btn on"><Users /> Community</button>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
         </div>
       </nav>

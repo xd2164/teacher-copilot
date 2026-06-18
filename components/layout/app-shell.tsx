@@ -84,7 +84,7 @@ export function AppShell() {
         </div>
         <div className="ws-nav-links">
           <Link href="/library" className="ws-btn"><BookOpen /> Library</Link>
-<Link href="/" className="ws-btn"><Presentation /> Demo</Link>
+          <Link href="/community" className="ws-btn"><Users /> Community</Link>
           <button className="ws-btn on"><Pencil /> Lesson</button>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
         </div>
