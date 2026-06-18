@@ -15,20 +15,19 @@ export function FeedbackButton() {
   const handleSubmit = async () => {
     if (!canSubmit || sending) return
     setSending(true)
-    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID
-    if (formspreeId) {
-      try {
-        await fetch(`https://formspree.io/f/${formspreeId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rating, comment, url: window.location.href, ts: new Date().toISOString() }),
-        })
-      } catch { /* fail silently */ }
-    } else {
-      const stars = rating > 0 ? `Rating: ${"★".repeat(rating)}${"☆".repeat(5 - rating)}\n\n` : ""
-      const body = encodeURIComponent(`${stars}${comment}\n\nPage: ${window.location.href}`)
-      window.location.href = `mailto:xiaoxuedubamboo@gmail.com?subject=Teacher+Co-Pilot+Feedback&body=${body}`
-    }
+    const stars = rating > 0 ? `${"★".repeat(rating)}${"☆".repeat(5 - rating)}` : ""
+    try {
+      await fetch("https://formsubmit.co/ajax/xiaoxuedubamboo@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: "Teacher Co-Pilot Feedback",
+          rating: stars || "not rated",
+          comment: comment || "(none)",
+          page: window.location.href,
+        }),
+      })
+    } catch { /* fail silently */ }
     track("feedback_submitted", { rating, has_comment: comment.trim().length > 0 ? 1 : 0 })
     setSending(false)
     setSubmitted(true)

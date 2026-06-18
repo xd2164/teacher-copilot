@@ -12,14 +12,21 @@ export default function CommunityPage() {
 
   const canSend = message.trim().length > 0
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!canSend) return
     track("community_submission", { has_name: name.trim().length > 0 ? 1 : 0 })
-    const subject = encodeURIComponent("Teacher Co-Pilot: Community Submission")
-    const body = encodeURIComponent(
-      `Name: ${name || "(not provided)"}\nEmail: ${email || "(not provided)"}\n\n${message}`
-    )
-    window.location.href = `mailto:xiaoxuedubamboo@gmail.com?subject=${subject}&body=${body}`
+    try {
+      await fetch("https://formsubmit.co/ajax/xiaoxuedubamboo@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: "Teacher Co-Pilot: Community Submission",
+          name: name || "(not provided)",
+          email: email || "(not provided)",
+          message,
+        }),
+      })
+    } catch { /* fail silently */ }
     setSent(true)
     setTimeout(() => { setSent(false); setName(""); setEmail(""); setMessage("") }, 4000)
   }
