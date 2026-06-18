@@ -14,7 +14,7 @@ export default function CommunityPage() {
 
   const handleSend = () => {
     if (!canSend) return
-    track("community_submission", { has_name: name.trim().length > 0 })
+    track("community_submission", { has_name: name.trim().length > 0 ? 1 : 0 })
     const subject = encodeURIComponent("Teacher Co-Pilot: Community Submission")
     const body = encodeURIComponent(
       `Name: ${name || "(not provided)"}\nEmail: ${email || "(not provided)"}\n\n${message}`
