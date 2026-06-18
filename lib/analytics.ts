@@ -14,6 +14,7 @@ export type TrackEvent =
   | "lesson_copied"
   | "lesson_shared"
   | "community_lesson_adapted"
+  | "community_submission"
   | "tab_changed"
 
 export function track(event: TrackEvent, params?: Record<string, string | number>) {
