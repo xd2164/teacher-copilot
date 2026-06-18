@@ -176,6 +176,10 @@ export default function HomePage() {
         <p className="lp-footer-cite">
           Lyublinskaya, I., &amp; Du, X. (2025). <em>Teaching AI literacy across the curriculum: A K–12 handbook.</em> Corwin.
         </p>
+        <p className="lp-footer-contact">
+          Questions or curriculum interests?{" "}
+          <a href="mailto:xiaoxuedubamboo@gmail.com">xiaoxuedubamboo@gmail.com</a>
+        </p>
       </footer>
     </>
   )

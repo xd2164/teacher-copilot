@@ -24,6 +24,10 @@ export function FeedbackButton() {
           body: JSON.stringify({ rating, comment, url: window.location.href, ts: new Date().toISOString() }),
         })
       } catch { /* fail silently */ }
+    } else {
+      const stars = rating > 0 ? `Rating: ${"★".repeat(rating)}${"☆".repeat(5 - rating)}\n\n` : ""
+      const body = encodeURIComponent(`${stars}${comment}\n\nPage: ${window.location.href}`)
+      window.open(`mailto:xiaoxuedubamboo@gmail.com?subject=Teacher+Co-Pilot+Feedback&body=${body}`)
     }
     track("feedback_submitted", { rating, has_comment: comment.trim().length > 0 ? 1 : 0 })
     setSending(false)

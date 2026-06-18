@@ -305,6 +305,12 @@ body {
 .lp-footer-cite {
   font-size: 11px; color: var(--text-tertiary); line-height: 1.5;
 }
+.lp-footer-contact {
+  font-size: 11px; color: var(--text-tertiary);
+}
+.lp-footer-contact a {
+  color: var(--text-secondary); text-decoration: underline;
+}
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 600px) {
