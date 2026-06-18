@@ -4,17 +4,17 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ChatPanel } from "@/components/chat/chat-panel"
 import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
-import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW } from "@/lib/demo-data"
+import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW, makeBlankLesson, makeWelcomeMessages } from "@/lib/demo-data"
 import { ChatMessage, LessonDraft, KnowledgeDocument } from "@/lib/types"
 import { getDemoResponse } from "@/lib/demo-responses"
 import { BookOpen, Pencil, Plus } from "lucide-react"
 import { track } from "@/lib/analytics"
 
-export function AppShell() {
+export function AppShell({ isNew = false }: { isNew?: boolean }) {
   const router = useRouter()
-  const [messages, setMessages]       = useState<ChatMessage[]>(DEMO_INITIAL_MESSAGES)
-  const [currentDraft, setCurrentDraft] = useState<LessonDraft>(DEMO_LESSON)
-  const [documents, setDocuments]     = useState<KnowledgeDocument[]>(DEMO_DOCUMENTS)
+  const [messages, setMessages]       = useState<ChatMessage[]>(() => isNew ? makeWelcomeMessages() : DEMO_INITIAL_MESSAGES)
+  const [currentDraft, setCurrentDraft] = useState<LessonDraft>(() => isNew ? makeBlankLesson() : DEMO_LESSON)
+  const [documents, setDocuments]     = useState<KnowledgeDocument[]>(isNew ? [] : DEMO_DOCUMENTS)
   const [isGenerating, setIsGenerating] = useState(false)
   const [activeView, setActiveView]   = useState<"draft" | "teacher-moves" | "timeline" | "design-space" | "quality">("draft")
   const [lessonUpdated, setLessonUpdated] = useState(false)

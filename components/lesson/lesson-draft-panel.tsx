@@ -65,11 +65,11 @@ export function LessonDraftPanel({
             </span>
           )}
         </div>
-        <h2 className="les-title">{draft.lessonTitle}</h2>
+        <h2 className="les-title">{draft.lessonTitle || "New lesson"}</h2>
         <div className="les-meta">
-          <span className="les-tag">{draft.gradeLevel}</span>
-          <span className="les-tag">{draft.subject}</span>
-          <span className="les-tag">{draft.duration}</span>
+          {draft.gradeLevel && <span className="les-tag">{draft.gradeLevel}</span>}
+          {draft.subject    && <span className="les-tag">{draft.subject}</span>}
+          {draft.duration   && <span className="les-tag">{draft.duration}</span>}
           <span className="ws-bdg tl">Current</span>
         </div>
       </div>

@@ -191,6 +191,43 @@ export const DEMO_LESSON: LessonDraft = {
   createdAt: new Date("2024-01-15T10:30:00"),
 }
 
+export function makeBlankLesson(): LessonDraft {
+  return {
+    id: `lesson-${Date.now()}`,
+    versionNumber: 1,
+    lessonTitle: "",
+    gradeLevel: "",
+    subject: "",
+    duration: "",
+    topic: "",
+    subjectLearningGoals: [],
+    aiLiteracyGoals: [],
+    bigAiIdea: "",
+    designPhase: { teacherGoal: "", studentQuestion: "", priorKnowledge: "", activity: "", misconceptionsToSurface: [] },
+    createPhase: { activityOverview: "", studentSteps: [], teacherMoves: [], materials: [] },
+    reflectPhase: { discussionPrompts: [], ethicalReflection: "", exitTicket: "" },
+    assessment: { successCriteria: [], rubric: [] },
+    differentiation: { multilingualLearners: [], studentsNeedingSupport: [], extension: [] },
+    rationale: { whyThisActivity: "", whyThisAiConnection: "", whyThisAssessment: "" },
+    teacherDecisionPoints: [],
+    sourceUseSummary: [],
+    revisionSuggestions: [],
+    createdAt: new Date(),
+  }
+}
+
+export function makeWelcomeMessages(): ChatMessage[] {
+  return [
+    {
+      id: "welcome-1",
+      role: "assistant",
+      content: "Hi! I'm your AI literacy lesson co-pilot.\n\nLet's design a lesson together. To get started, tell me:\n- **Grade level** (e.g. Grade 5, Grade 9–10)\n- **Subject** (e.g. Science, English, Math, Art)\n- **Topic or unit** you're working on\n\nIf you have an AI concept in mind — like how AI makes decisions, what training data is, or AI and fairness — mention that too. Otherwise I'll help you find a natural connection for your topic.",
+      timestamp: new Date(),
+      stage: "understand",
+    }
+  ]
+}
+
 export const DEMO_TEACHER_MOVES: TeacherMove[] = [
   {
     type: "misconception_probe",
