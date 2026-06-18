@@ -1,7 +1,7 @@
 "use client"
-import React, { useState, useRef } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
-import { Pencil, BookOpen, FileText, Plus, Check, Upload, Presentation, Users } from "lucide-react"
+import { Pencil, BookOpen, FileText, Plus, Check, Users } from "lucide-react"
 import { DEMO_DOCUMENTS } from "@/lib/demo-data"
 import { KnowledgeDocument } from "@/lib/types"
 
@@ -50,26 +50,8 @@ const RECENT_LESSONS = [
 export default function LibraryPage() {
   const [activeFilter, setActiveFilter]     = useState("all")
   const [selectedDocId, setSelectedDocId]   = useState<string | null>(null)
-  const [uploadedDocs, setUploadedDocs]     = useState<KnowledgeDocument[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const newDoc: KnowledgeDocument = {
-      id: `upload-${Date.now()}`,
-      fileName: file.name,
-      sourceType: "upload",
-      status: "ready",
-      trustLevel: "medium",
-      includeInSearch: true,
-    }
-    setUploadedDocs(prev => [...prev, newDoc])
-    setSelectedDocId(newDoc.id)
-    e.target.value = ""
-  }
-
-  const allDocs  = [...DEMO_DOCUMENTS, ...uploadedDocs]
+  const allDocs  = DEMO_DOCUMENTS
   const filtered = allDocs.filter(d => {
     if (activeFilter === "all") return true
     return DOC_FILTER_MAP[d.sourceType] === activeFilter
@@ -88,7 +70,6 @@ export default function LibraryPage() {
         </div>
         <div className="ws-nav-links">
           <button className="ws-btn on"><BookOpen /> Library</button>
-          <Link href="/community" className="ws-btn"><Users /> Community</Link>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
         </div>
       </nav>
@@ -137,18 +118,6 @@ export default function LibraryPage() {
               )
             })}
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,.docx,.txt,.md"
-              style={{ display: "none" }}
-              onChange={handleFileUpload}
-            />
-            <button className="lib-upl" onClick={() => fileInputRef.current?.click()}>
-              <Upload />
-              <span>Upload a resource</span>
-              <span style={{ fontSize: 11, color: "var(--t3)" }}>PDF, DOCX, or TXT</span>
-            </button>
           </div>
         </div>
 

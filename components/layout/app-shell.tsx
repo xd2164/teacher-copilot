@@ -6,7 +6,7 @@ import { LessonDraftPanel } from "@/components/lesson/lesson-draft-panel"
 import { DEMO_DOCUMENTS, DEMO_LESSON, DEMO_INITIAL_MESSAGES, DEMO_TEACHER_MOVES, DEMO_REVISIONS, DEMO_QUALITY_REVIEW } from "@/lib/demo-data"
 import { ChatMessage, LessonDraft, KnowledgeDocument } from "@/lib/types"
 import { getDemoResponse } from "@/lib/demo-responses"
-import { BookOpen, Pencil, Presentation, Plus, Users } from "lucide-react"
+import { BookOpen, Pencil, Plus } from "lucide-react"
 import { track } from "@/lib/analytics"
 
 export function AppShell() {
@@ -58,19 +58,6 @@ export function AppShell() {
     )
   }
 
-  const handleDocumentUpload = useCallback((file: File) => {
-    const newDoc: KnowledgeDocument = {
-      id: `upload-${Date.now()}`,
-      fileName: file.name,
-      sourceType: "upload",
-      status: "ready",
-      trustLevel: "medium",
-      includeInSearch: true,
-    }
-    setDocuments(prev => [...prev, newDoc])
-    track("document_uploaded", { file_type: file.name.split(".").pop() ?? "unknown" })
-  }, [])
-
   return (
     <>
       <nav className="ws-nav">
@@ -84,7 +71,6 @@ export function AppShell() {
         </div>
         <div className="ws-nav-links">
           <Link href="/library" className="ws-btn"><BookOpen /> Library</Link>
-          <Link href="/community" className="ws-btn"><Users /> Community</Link>
           <button className="ws-btn on"><Pencil /> Lesson</button>
           <Link href="/lesson/new" className="ws-btn cta"><Plus /> New lesson</Link>
         </div>
@@ -97,7 +83,6 @@ export function AppShell() {
             isGenerating={isGenerating}
             onSendMessage={handleSendMessage}
             documents={documents}
-            onUpload={handleDocumentUpload}
           />
         </div>
         <div className="les-col">
