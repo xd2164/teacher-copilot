@@ -27,7 +27,7 @@ export function FeedbackButton() {
     } else {
       const stars = rating > 0 ? `Rating: ${"★".repeat(rating)}${"☆".repeat(5 - rating)}\n\n` : ""
       const body = encodeURIComponent(`${stars}${comment}\n\nPage: ${window.location.href}`)
-      window.open(`mailto:xiaoxuedubamboo@gmail.com?subject=Teacher+Co-Pilot+Feedback&body=${body}`)
+      window.location.href = `mailto:xiaoxuedubamboo@gmail.com?subject=Teacher+Co-Pilot+Feedback&body=${body}`
     }
     track("feedback_submitted", { rating, has_comment: comment.trim().length > 0 ? 1 : 0 })
     setSending(false)

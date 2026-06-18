@@ -19,7 +19,7 @@ export default function CommunityPage() {
     const body = encodeURIComponent(
       `Name: ${name || "(not provided)"}\nEmail: ${email || "(not provided)"}\n\n${message}`
     )
-    window.open(`mailto:xiaoxuedubamboo@gmail.com?subject=${subject}&body=${body}`)
+    window.location.href = `mailto:xiaoxuedubamboo@gmail.com?subject=${subject}&body=${body}`
     setSent(true)
     setTimeout(() => { setSent(false); setName(""); setEmail(""); setMessage("") }, 4000)
   }
