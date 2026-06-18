@@ -1087,3 +1087,48 @@ body {
   padding: 1rem 0 .25rem; border-top: 1px solid var(--bd);
   margin-top: 2.5rem;
 }
+
+/* ── Community announce card ────────────────────────────── */
+.cm-announce-card {
+  background: var(--wh); border: 1px solid var(--bd);
+  border-radius: 12px; padding: 1.5rem;
+}
+.cm-announce-head {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; font-weight: 600; color: var(--tx);
+  margin-bottom: .4rem;
+}
+.cm-announce-head svg { color: var(--nv); flex-shrink: 0; }
+.cm-announce-sub {
+  font-size: 13px; color: var(--t2); line-height: 1.6; margin-bottom: 1.25rem;
+}
+.cm-announce-thanks {
+  font-size: 13px; color: var(--tl); background: var(--tll);
+  border-radius: 6px; padding: .75rem 1rem; text-align: center;
+}
+.cm-announce-form { display: flex; flex-direction: column; gap: .75rem; }
+.cm-form-row { display: flex; gap: .75rem; }
+.cm-form-input {
+  flex: 1; background: var(--bg); border: 1px solid var(--bd2);
+  border-radius: 6px; padding: 8px 11px; font-family: inherit;
+  font-size: 13px; color: var(--tx); outline: none;
+  transition: border-color .12s; min-width: 0;
+}
+.cm-form-input:focus { border-color: var(--nv); background: var(--wh); }
+.cm-form-ta {
+  width: 100%; background: var(--bg); border: 1px solid var(--bd2);
+  border-radius: 6px; padding: 9px 11px; font-family: inherit;
+  font-size: 13px; color: var(--tx); resize: vertical;
+  min-height: 100px; outline: none; transition: border-color .12s; display: block;
+}
+.cm-form-ta:focus { border-color: var(--nv); background: var(--wh); }
+.cm-form-send {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: #fff;
+  background: var(--nv); border: none; border-radius: 6px;
+  padding: 8px 20px; cursor: pointer; font-family: inherit;
+  transition: background .12s;
+}
+.cm-form-send:hover { background: #153a6e; }
+.cm-form-send:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 600px) { .cm-form-row { flex-direction: column; } }
