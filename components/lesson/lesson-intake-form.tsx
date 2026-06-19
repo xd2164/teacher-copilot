@@ -47,11 +47,8 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
   }
 
   const toggleSubject = (s: string) => {
-    setSubjects(prev => {
-      const next = prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]
-      setSelectedStandards([])
-      return next
-    })
+    setSubjects(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])
+    setSelectedStandards([])
   }
 
   const toggleStandard = (std: Standard) => {
@@ -178,8 +175,8 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
         })}
       </div>
 
-      {/* Dynamic standards picker — appears once grade + subject are selected */}
-      {standardGroups.length > 0 && (
+      {/* Dynamic standards picker — appears as soon as subjects are selected */}
+      {subjects.length > 0 && (
         <div style={{ marginTop: "1.25rem" }}>
           <label className="ws-modal-label" style={{ marginBottom: 4 }}>
             Standards alignment
@@ -187,35 +184,43 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
               — optional
             </span>
           </label>
-          <p style={{ fontSize: 11, color: "var(--t3)", marginBottom: 8, lineHeight: 1.5 }}>
-            Select any standards this lesson should address.
-            {selectedStandards.length > 0 && (
-              <strong style={{ color: "var(--nv)", marginLeft: 4 }}>
-                {selectedStandards.length} selected
-              </strong>
-            )}
-          </p>
-          {standardGroups.map(group => (
-            <div key={group.label} className="lif-std-group">
-              <p className="lif-std-group-label">{group.label}</p>
-              {group.standards.map(std => {
-                const isChecked = selectedStandards.some(s => s.code === std.code)
-                return (
-                  <label key={std.code} className={`lif-std-item${isChecked ? " checked" : ""}`}>
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => toggleStandard(std)}
-                    />
-                    <span>
-                      <span className="lif-std-code">{std.code}</span>
-                      <span className="lif-std-desc"> — {std.description}</span>
-                    </span>
-                  </label>
-                )
-              })}
-            </div>
-          ))}
+          {!gradeLevel ? (
+            <p style={{ fontSize: 11, color: "var(--t3)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg2)", borderRadius: 6, border: "1px solid var(--bd)" }}>
+              Select a grade above to see {subjects.join(" / ")} standards.
+            </p>
+          ) : (
+            <>
+              <p style={{ fontSize: 11, color: "var(--t3)", marginBottom: 8, lineHeight: 1.5 }}>
+                Select any standards this lesson should address.
+                {selectedStandards.length > 0 && (
+                  <strong style={{ color: "var(--nv)", marginLeft: 4 }}>
+                    {selectedStandards.length} selected
+                  </strong>
+                )}
+              </p>
+              {standardGroups.map(group => (
+                <div key={group.label} className="lif-std-group">
+                  <p className="lif-std-group-label">{group.label}</p>
+                  {group.standards.map(std => {
+                    const isChecked = selectedStandards.some(s => s.code === std.code)
+                    return (
+                      <label key={std.code} className={`lif-std-item${isChecked ? " checked" : ""}`}>
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => toggleStandard(std)}
+                        />
+                        <span>
+                          <span className="lif-std-code">{std.code}</span>
+                          <span className="lif-std-desc"> — {std.description}</span>
+                        </span>
+                      </label>
+                    )
+                  })}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       )}
 
