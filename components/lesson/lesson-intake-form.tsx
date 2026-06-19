@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react"
 import { LessonDraft } from "@/lib/types"
 import { generateLesson } from "@/lib/lesson-generator"
-import { getRelevantStandards, Standard, AI_BIG_IDEAS } from "@/lib/standards-data"
+import { getRelevantStandardsForSubjects, Standard, AI_BIG_IDEAS } from "@/lib/standards-data"
 
 const GRADE_LEVELS = [
   "K",
@@ -29,7 +29,7 @@ interface LessonIntakeFormProps {
 
 export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
   const [gradeLevel,        setGradeLevel]        = useState("")
-  const [subject,           setSubject]           = useState("")
+  const [subjects,          setSubjects]          = useState<string[]>([])
   const [topic,             setTopic]             = useState("")
   const [duration,          setDuration]          = useState("45 minutes")
   const [aiConcept,         setAiConcept]         = useState("")
@@ -37,17 +37,21 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
   const [priorFeedback,     setPriorFeedback]     = useState("")
 
   const standardGroups = useMemo(
-    () => getRelevantStandards(gradeLevel, subject),
-    [gradeLevel, subject]
+    () => getRelevantStandardsForSubjects(gradeLevel, subjects),
+    [gradeLevel, subjects]
   )
 
   const handleGradeChange = (val: string) => {
     setGradeLevel(val)
     setSelectedStandards([])
   }
-  const handleSubjectChange = (val: string) => {
-    setSubject(val)
-    setSelectedStandards([])
+
+  const toggleSubject = (s: string) => {
+    setSubjects(prev => {
+      const next = prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]
+      setSelectedStandards([])
+      return next
+    })
   }
 
   const toggleStandard = (std: Standard) => {
@@ -58,14 +62,14 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
     )
   }
 
-  const canSubmit = gradeLevel !== "" && subject !== "" && topic.trim() !== "" && aiConcept !== ""
+  const canSubmit = gradeLevel !== "" && subjects.length > 0 && topic.trim() !== "" && aiConcept !== ""
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!canSubmit) return
     const draft = generateLesson({
       gradeLevel,
-      subject,
+      subjects,
       topic: topic.trim(),
       duration,
       aiConcept,
@@ -98,19 +102,35 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
         ))}
       </select>
 
-      {/* Subject */}
-      <label className="ws-modal-label" htmlFor="intake-subject">Subject</label>
-      <select
-        id="intake-subject"
-        className="ws-modal-input"
-        value={subject}
-        onChange={e => handleSubjectChange(e.target.value)}
-      >
-        <option value="">Select subject…</option>
-        {SUBJECTS.map(s => (
-          <option key={s} value={s}>{s}</option>
-        ))}
-      </select>
+      {/* Subject — multi-select chips */}
+      <label className="ws-modal-label">
+        Subject(s)
+        {subjects.length > 1 && (
+          <span className="lif-framework-badge" style={{ background: "var(--aml)", color: "var(--am)" }}>
+            Interdisciplinary
+          </span>
+        )}
+      </label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 2 }}>
+        {SUBJECTS.map(s => {
+          const isSelected = subjects.includes(s)
+          return (
+            <button
+              key={s}
+              type="button"
+              onClick={() => toggleSubject(s)}
+              className={`lif-subject-chip${isSelected ? " selected" : ""}`}
+            >
+              {s}
+            </button>
+          )
+        })}
+      </div>
+      {subjects.length > 1 && (
+        <p style={{ fontSize: 11, color: "var(--am)", marginTop: 5, lineHeight: 1.4 }}>
+          Interdisciplinary lesson — standards from all selected subjects will be shown.
+        </p>
+      )}
 
       {/* Topic */}
       <label className="ws-modal-label" htmlFor="intake-topic">Topic or unit</label>

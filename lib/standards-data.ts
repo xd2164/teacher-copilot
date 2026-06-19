@@ -190,6 +190,22 @@ export function getRelevantStandards(grade: string, subject: string): StandardGr
   return []
 }
 
+// Combines standards from multiple subjects (for interdisciplinary lessons)
+export function getRelevantStandardsForSubjects(grade: string, subjects: string[]): StandardGroup[] {
+  if (!grade || subjects.length === 0) return []
+  const seen = new Set<string>()
+  const combined: StandardGroup[] = []
+  for (const subject of subjects) {
+    for (const group of getRelevantStandards(grade, subject)) {
+      if (!seen.has(group.label)) {
+        seen.add(group.label)
+        combined.push(group)
+      }
+    }
+  }
+  return combined
+}
+
 // ── Five Big Ideas of AI (AI4K12) ─────────────────────────────────────────────
 
 export const AI_BIG_IDEAS = [

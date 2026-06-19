@@ -1188,3 +1188,13 @@ body {
 .lif-std-code { font-weight: 600; color: var(--nv); }
 .lif-std-item.checked .lif-std-code { color: var(--nv); }
 .lif-std-desc { color: var(--t2); }
+
+.lif-subject-chip {
+  font-size: 12px; font-weight: 500;
+  padding: 5px 13px; border-radius: 100px; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+  border: 1.5px solid var(--bd2); background: var(--bg2);
+  color: var(--t2); transition: border-color .1s, background .1s, color .1s;
+}
+.lif-subject-chip:hover { border-color: var(--nvm); color: var(--nv); }
+.lif-subject-chip.selected { border-color: var(--nv); background: var(--nv); color: #fff; }

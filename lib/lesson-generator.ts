@@ -3,10 +3,10 @@ import { Standard } from "./standards-data"
 
 export interface LessonIntake {
   gradeLevel: string
-  subject: string
+  subjects: string[]   // one or more; first entry is the primary subject
   topic: string
   duration: string
-  aiConcept: string  // "perception" | "representation" | "learning" | "natural-interaction" | "societal-impact"
+  aiConcept: string    // "perception" | "representation" | "learning" | "natural-interaction" | "societal-impact"
   selectedStandards?: Standard[]
   priorFeedback?: string
 }
@@ -596,9 +596,9 @@ function getTeacherDecisionPoints(topic: string, aiConcept: string, subject: str
 // ── Source use summary ─────────────────────────────────────────────────────────
 
 function buildSourceUseSummary(intake: LessonIntake): string[] {
-  const { gradeLevel, subject, topic, aiConcept, selectedStandards, priorFeedback } = intake
+  const { gradeLevel, subjects, topic, aiConcept, selectedStandards, priorFeedback } = intake
   const summary: string[] = [
-    `Generated for ${gradeLevel} ${subject} — topic: "${topic}"`,
+    `Generated for ${gradeLevel} ${subjects.join(" / ")} — topic: "${topic}"`,
     `AI literacy focus: AI4K12 Big Idea — ${aiConcept.replace("-", " ")} (ai4k12.org/five-big-ideas)`,
     `Framework: Design–Create–Reflect (DCR) pedagogical structure`,
   ]
@@ -620,21 +620,32 @@ function buildSourceUseSummary(intake: LessonIntake): string[] {
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export function generateLesson(intake: LessonIntake): LessonDraft {
-  const { gradeLevel, subject, topic, duration, aiConcept } = intake
+  const { gradeLevel, subjects, topic, duration, aiConcept } = intake
+  const subject = subjects[0] || "Other"           // primary subject drives content
+  const subjectDisplay = subjects.join(" / ")
+  const isInterdisciplinary = subjects.length > 1
   const activityVerb = getActivityVerb(subject)
 
   return {
     id: `lesson-${Date.now()}`,
     versionNumber: 1,
-    lessonTitle: `${topic} & AI Literacy (${gradeLevel} ${subject})`,
+    lessonTitle: isInterdisciplinary
+      ? `${topic}: Interdisciplinary AI Literacy (${gradeLevel})`
+      : `${topic} & AI Literacy (${gradeLevel} ${subject})`,
     gradeLevel,
-    subject,
+    subject: subjectDisplay,
     duration,
     topic,
-    subjectLearningGoals: [
-      `Explain key concepts and evidence in ${topic} using disciplinary vocabulary and reasoning`,
-      `Apply understanding of ${topic} to evaluate real-world examples, scenarios, and claims`,
-    ],
+    subjectLearningGoals: isInterdisciplinary
+      ? [
+          `Connect ${topic} across ${subjectDisplay} by identifying how each discipline asks different questions about the same phenomenon`,
+          `Use disciplinary thinking from ${subjects[0]} and ${subjects.slice(1).join(" and ")} together to analyze real-world evidence`,
+          `Explain how an AI system trained on ${topic} data would approach the problem differently than a practitioner from any single discipline`,
+        ]
+      : [
+          `Explain key concepts and evidence in ${topic} using disciplinary vocabulary and reasoning`,
+          `Apply understanding of ${topic} to evaluate real-world examples, scenarios, and claims`,
+        ],
     aiLiteracyGoals: getAiLiteracyGoals(subject, aiConcept, gradeLevel),
     bigAiIdea: getBigAiIdea(subject, aiConcept),
     designPhase: {
