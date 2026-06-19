@@ -1,7 +1,7 @@
 export interface Standard {
   code: string
   description: string
-  framework: "CCSS-Math" | "CCSS-ELA" | "NGSS" | "CSTA"
+  framework: "CCSS-Math" | "CCSS-ELA" | "NGSS" | "CSTA" | "C3" | "NCAS" | "NHES" | "SHAPE"
 }
 
 export interface StandardGroup {
@@ -135,6 +135,101 @@ const CSTA_HS: Standard[] = [
   { code: "CSTA.3B-IC-27", description: "(Grades 11-12) Predict how computational innovations that have revolutionized aspects of our culture might evolve", framework: "CSTA" },
 ]
 
+// ── C3 Framework (History / Social Studies) ───────────────────────────────────
+
+const C3_INQUIRY: Standard[] = [
+  { code: "D1.1.K-12", description: "Construct compelling questions that reflect an enduring issue in the discipline", framework: "C3" },
+  { code: "D1.5.K-12", description: "Determine the kinds of sources that will be helpful in answering compelling and supporting questions", framework: "C3" },
+  { code: "D3.1.K-12", description: "Gather relevant information from multiple sources; use the origin, authority, structure, context, and corroborative value to guide selection", framework: "C3" },
+  { code: "D3.2.K-12", description: "Evaluate the credibility of a source by determining its relevance, intended use, and potential bias", framework: "C3" },
+  { code: "D4.7.K-12", description: "Explain and/or document strategies for addressing local, regional, and global problems and evaluate the effectiveness of those strategies", framework: "C3" },
+]
+
+const C3_DCI_K5: Standard[] = [
+  { code: "D2.His.1.K-2", description: "Create a chronological sequence of multiple events and explain the relationship among them", framework: "C3" },
+  { code: "D2.His.2.3-5", description: "Compare life in specific historical time periods to life today", framework: "C3" },
+  { code: "D2.Civ.8.3-5", description: "Identify core civic virtues and democratic principles that guide government, society, and communities", framework: "C3" },
+  { code: "D2.Eco.1.3-5", description: "Compare the benefits and costs of individual choices", framework: "C3" },
+]
+
+const C3_DCI_6_8: Standard[] = [
+  { code: "D2.His.1.6-8", description: "Analyze connections among events and developments in broader historical contexts", framework: "C3" },
+  { code: "D2.His.5.6-8", description: "Explain how and why perspectives of people have changed over time", framework: "C3" },
+  { code: "D2.Civ.13.6-8", description: "Evaluate public policies in terms of intended and unintended outcomes, and historical, social, and ethical considerations", framework: "C3" },
+  { code: "D2.Eco.12.6-8", description: "Explain how economic decisions affect the well-being of individuals, businesses, and society", framework: "C3" },
+  { code: "D2.Geo.4.6-8", description: "Explain how cultural patterns and economic decisions influence environments and the daily lives of people", framework: "C3" },
+]
+
+const C3_DCI_9_12: Standard[] = [
+  { code: "D2.His.1.9-12", description: "Evaluate how historical events and developments were shaped by unique circumstances of time and place as well as broader historical contexts", framework: "C3" },
+  { code: "D2.His.5.9-12", description: "Analyze how historical contexts shaped and continue to shape people's perspectives", framework: "C3" },
+  { code: "D2.Civ.13.9-12", description: "Evaluate public policies in terms of intended and unintended outcomes, address trade-offs, and consider different affected groups", framework: "C3" },
+  { code: "D2.Eco.13.9-12", description: "Explain why advancements in technology and investments in capital goods and human capital increase economic growth", framework: "C3" },
+  { code: "D4.6.9-12", description: "Use disciplinary and interdisciplinary lenses to understand the characteristics and causes of local, regional, and global problems", framework: "C3" },
+]
+
+// ── National Core Arts Standards ──────────────────────────────────────────────
+
+const NCAS_K5: Standard[] = [
+  { code: "VA.Cr1.1.K-5", description: "Explore, conceptualize, and develop artistic ideas; make deliberate choices in creating artwork", framework: "NCAS" },
+  { code: "VA.Re7.1.K-5", description: "Identify and describe how the elements of art and principles of design work together to communicate meaning", framework: "NCAS" },
+  { code: "VA.Re9.1.K-5", description: "Apply simple criteria to discuss and evaluate personal artistic work and that of peers", framework: "NCAS" },
+  { code: "VA.Cn10.1.K-5", description: "Identify how personal interests and curiosity influence the making of artwork", framework: "NCAS" },
+  { code: "VA.Cn11.1.K-5", description: "Understand that people from different places and times have made art for a variety of reasons", framework: "NCAS" },
+]
+
+const NCAS_6_8: Standard[] = [
+  { code: "VA.Cr1.1.6-8", description: "Document early stages of the creative process through written, visual, and/or verbal means", framework: "NCAS" },
+  { code: "VA.Cr2.3.6-8", description: "Present work in public by using processes of critique and reflection to select, analyze, define, and solve problems", framework: "NCAS" },
+  { code: "VA.Re7.1.6-8", description: "Perceive and analyze artistic work; compare uses of the elements of art and principles of design in artwork", framework: "NCAS" },
+  { code: "VA.Re8.1.6-8", description: "Interpret how the meaning of a work of art changes based on audience, culture, and context", framework: "NCAS" },
+  { code: "VA.Re9.1.6-8", description: "Create, justify, and refine criteria for evaluating a work of art or collection of artworks using specific historical, theoretical, and cultural contexts", framework: "NCAS" },
+  { code: "VA.Cn11.1.6-8", description: "Distinguish different ways art is used to represent, establish, communicate, and maintain cultural identity", framework: "NCAS" },
+]
+
+const NCAS_9_12: Standard[] = [
+  { code: "VA.Cr1.1.HS", description: "Use multiple approaches to begin creative endeavors; envision and analyze multiple solutions to a problem", framework: "NCAS" },
+  { code: "VA.Re7.1.HS", description: "Perceive, analyze, and describe how visual and material culture defines, shapes, enhances, inhibits, and reflects the lives of its makers and consumers", framework: "NCAS" },
+  { code: "VA.Re8.1.HS", description: "Interpret an artwork or collection of works by comparing across time and discussing the ideas, contexts, and interpretive claims", framework: "NCAS" },
+  { code: "VA.Re9.1.HS", description: "Evaluate the aesthetic and cultural significance of artworks through a relevant set of criteria", framework: "NCAS" },
+  { code: "VA.Cn11.1.HS", description: "Compare uses of art in a variety of societal, cultural, and historical contexts, and make connections to contemporary and emerging practices including digital and AI-assisted art", framework: "NCAS" },
+]
+
+// ── National Health Education Standards (NHES) ────────────────────────────────
+
+const NHES_K5: Standard[] = [
+  { code: "NHES.1.K-5", description: "Students comprehend concepts related to health promotion and disease prevention to enhance health", framework: "NHES" },
+  { code: "NHES.2.K-5", description: "Students demonstrate the ability to access valid health information and health-promoting products and services", framework: "NHES" },
+  { code: "NHES.5.K-5", description: "Students demonstrate the ability to use decision-making skills to enhance health", framework: "NHES" },
+  { code: "NHES.7.K-5", description: "Students demonstrate the ability to practice health-enhancing behaviors and avoid or reduce risks", framework: "NHES" },
+]
+
+const NHES_6_8: Standard[] = [
+  { code: "NHES.1.6-8", description: "Analyze the relationship between healthy behaviors, protective factors, and personal, family, and community health", framework: "NHES" },
+  { code: "NHES.2.6-8", description: "Analyze the validity of health information, products, and services — including AI-powered health apps and wearables", framework: "NHES" },
+  { code: "NHES.3.6-8", description: "Analyze the role of individual responsibility for enhancing health and the influence of peers, family, culture, media, and technology", framework: "NHES" },
+  { code: "NHES.5.6-8", description: "Analyze various strategies for making decisions regarding health/wellness and evaluate the potential outcomes", framework: "NHES" },
+  { code: "NHES.7.6-8", description: "Demonstrate the ability to influence and support others in making positive health choices", framework: "NHES" },
+]
+
+const NHES_9_12: Standard[] = [
+  { code: "NHES.1.9-12", description: "Predict how healthy behaviors can affect health status throughout the life span", framework: "NHES" },
+  { code: "NHES.2.9-12", description: "Evaluate the validity and accessibility of health information, products, and services — including AI diagnostic tools", framework: "NHES" },
+  { code: "NHES.3.9-12", description: "Analyze the effect of technology and media on personal, family, and community health decisions and practices", framework: "NHES" },
+  { code: "NHES.5.9-12", description: "Evaluate the health consequences of decisions and the use of health data/technology in decision-making", framework: "NHES" },
+  { code: "NHES.8.9-12", description: "Demonstrate the ability to advocate for personal, family, and community health — including equitable access to health technology", framework: "NHES" },
+]
+
+// ── SHAPE America (Physical Education) ───────────────────────────────────────
+
+const SHAPE_ALL: Standard[] = [
+  { code: "SHAPE.S1", description: "The physically literate individual demonstrates competency in a variety of motor skills and movement patterns", framework: "SHAPE" },
+  { code: "SHAPE.S2", description: "The physically literate individual applies knowledge of concepts, principles, strategies, and tactics to movement and performance", framework: "SHAPE" },
+  { code: "SHAPE.S3", description: "The physically literate individual demonstrates the knowledge and skills to achieve and maintain a health-enhancing level of physical activity and fitness", framework: "SHAPE" },
+  { code: "SHAPE.S4", description: "The physically literate individual exhibits responsible personal and social behavior that respects self and others", framework: "SHAPE" },
+  { code: "SHAPE.S5", description: "The physically literate individual recognizes the value of physical activity for health, enjoyment, challenge, self-expression, and/or social interaction", framework: "SHAPE" },
+]
+
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 export function getRelevantStandards(grade: string, subject: string): StandardGroup[] {
@@ -177,7 +272,37 @@ export function getRelevantStandards(grade: string, subject: string): StandardGr
     return [{ label: "CSTA Computer Science Standards", standards: contentStandards }]
   }
 
-  if (subject === "History/Social Studies" || subject === "Art" || subject === "Health/PE" || subject === "Other") {
+  if (subject === "History/Social Studies") {
+    const dci =
+      band === "K-2" || band === "3-5" ? C3_DCI_K5 :
+      band === "6-8" ? C3_DCI_6_8 :
+      C3_DCI_9_12
+    return [
+      { label: "C3 Framework — Inquiry Arc (all grades)", standards: C3_INQUIRY },
+      { label: "C3 Disciplinary Concepts", standards: dci },
+    ]
+  }
+
+  if (subject === "Art") {
+    const contentStandards =
+      band === "K-2" || band === "3-5" ? NCAS_K5 :
+      band === "6-8" ? NCAS_6_8 :
+      NCAS_9_12
+    return [{ label: "National Core Arts Standards (Visual Art)", standards: contentStandards }]
+  }
+
+  if (subject === "Health/PE") {
+    const healthStandards =
+      band === "K-2" || band === "3-5" ? NHES_K5 :
+      band === "6-8" ? NHES_6_8 :
+      NHES_9_12
+    return [
+      { label: "National Health Education Standards (NHES)", standards: healthStandards },
+      { label: "SHAPE America — National PE Standards", standards: SHAPE_ALL },
+    ]
+  }
+
+  if (subject === "Other") {
     const elaStandards =
       band === "K-2" || band === "3-5" ? CC_ELA_K5 :
       band === "6-8" ? CC_ELA_6_8 :
