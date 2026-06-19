@@ -1,7 +1,8 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { LessonDraft } from "@/lib/types"
 import { generateLesson } from "@/lib/lesson-generator"
+import { getRelevantStandards, Standard, AI_BIG_IDEAS } from "@/lib/standards-data"
 
 const GRADE_LEVELS = [
   "K",
@@ -22,26 +23,40 @@ const SUBJECTS = [
 
 const DURATIONS = ["30 minutes", "45 minutes", "60 minutes", "90 minutes"]
 
-const AI_CONCEPTS: { value: string; label: string }[] = [
-  { value: "patterns",   label: "How AI learns from data" },
-  { value: "decisions",  label: "How AI makes decisions" },
-  { value: "fairness",   label: "AI fairness & bias" },
-  { value: "creativity", label: "AI & creativity" },
-  { value: "society",    label: "AI in society" },
-]
-
 interface LessonIntakeFormProps {
   onGenerate: (draft: LessonDraft) => void
 }
 
 export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
-  const [gradeLevel,     setGradeLevel]     = useState("")
-  const [subject,        setSubject]        = useState("")
-  const [topic,          setTopic]          = useState("")
-  const [duration,       setDuration]       = useState("45 minutes")
-  const [aiConcept,      setAiConcept]      = useState("")
-  const [standards,      setStandards]      = useState("")
-  const [priorFeedback,  setPriorFeedback]  = useState("")
+  const [gradeLevel,        setGradeLevel]        = useState("")
+  const [subject,           setSubject]           = useState("")
+  const [topic,             setTopic]             = useState("")
+  const [duration,          setDuration]          = useState("45 minutes")
+  const [aiConcept,         setAiConcept]         = useState("")
+  const [selectedStandards, setSelectedStandards] = useState<Standard[]>([])
+  const [priorFeedback,     setPriorFeedback]     = useState("")
+
+  const standardGroups = useMemo(
+    () => getRelevantStandards(gradeLevel, subject),
+    [gradeLevel, subject]
+  )
+
+  const handleGradeChange = (val: string) => {
+    setGradeLevel(val)
+    setSelectedStandards([])
+  }
+  const handleSubjectChange = (val: string) => {
+    setSubject(val)
+    setSelectedStandards([])
+  }
+
+  const toggleStandard = (std: Standard) => {
+    setSelectedStandards(prev =>
+      prev.some(s => s.code === std.code)
+        ? prev.filter(s => s.code !== std.code)
+        : [...prev, std]
+    )
+  }
 
   const canSubmit = gradeLevel !== "" && subject !== "" && topic.trim() !== "" && aiConcept !== ""
 
@@ -54,7 +69,7 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
       topic: topic.trim(),
       duration,
       aiConcept,
-      standards: standards.trim() || undefined,
+      selectedStandards: selectedStandards.length > 0 ? selectedStandards : undefined,
       priorFeedback: priorFeedback.trim() || undefined,
     })
     onGenerate(draft)
@@ -66,7 +81,7 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
         Let&apos;s plan your lesson
       </p>
       <p style={{ fontSize: 13, color: "var(--t2)", marginBottom: "1.5rem" }}>
-        Tell the co-pilot what you&apos;re teaching.
+        Tell the co-pilot what you&apos;re teaching and we&apos;ll draft a full AI literacy lesson.
       </p>
 
       {/* Grade Level */}
@@ -75,7 +90,7 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
         id="intake-grade"
         className="ws-modal-input"
         value={gradeLevel}
-        onChange={e => setGradeLevel(e.target.value)}
+        onChange={e => handleGradeChange(e.target.value)}
       >
         <option value="">Select grade…</option>
         {GRADE_LEVELS.map(g => (
@@ -89,7 +104,7 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
         id="intake-subject"
         className="ws-modal-input"
         value={subject}
-        onChange={e => setSubject(e.target.value)}
+        onChange={e => handleSubjectChange(e.target.value)}
       >
         <option value="">Select subject…</option>
         {SUBJECTS.map(s => (
@@ -121,54 +136,86 @@ export function LessonIntakeForm({ onGenerate }: LessonIntakeFormProps) {
         ))}
       </select>
 
-      {/* AI Concept chips */}
-      <label className="ws-modal-label">AI literacy focus</label>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-        {AI_CONCEPTS.map(concept => {
-          const isSelected = aiConcept === concept.value
+      {/* Five Big Ideas of AI */}
+      <label className="ws-modal-label">
+        AI literacy focus
+        <span className="lif-framework-badge">AI4K12 Five Big Ideas</span>
+      </label>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 2 }}>
+        {AI_BIG_IDEAS.map(idea => {
+          const isSelected = aiConcept === idea.value
           return (
             <button
-              key={concept.value}
+              key={idea.value}
               type="button"
-              onClick={() => setAiConcept(concept.value)}
-              style={{
-                fontSize: 11,
-                border: `1px solid ${isSelected ? "var(--nv)" : "var(--nvm)"}`,
-                borderRadius: 100,
-                padding: "3px 11px",
-                cursor: "pointer",
-                fontFamily: "inherit",
-                whiteSpace: "nowrap",
-                transition: "background .1s, color .1s",
-                background: isSelected ? "var(--nv)" : "var(--nvl)",
-                color: isSelected ? "#fff" : "var(--nv)",
-              }}
+              onClick={() => setAiConcept(idea.value)}
+              className={`lif-idea-chip${isSelected ? " selected" : ""}`}
             >
-              {concept.label}
+              <span className="lif-idea-label">{idea.label}</span>
+              <span className="lif-idea-desc">{idea.description}</span>
             </button>
           )
         })}
       </div>
 
-      {/* Standards (optional) */}
-      <label className="ws-modal-label" htmlFor="intake-standards">Standards (optional)</label>
-      <textarea
-        id="intake-standards"
-        className="ws-modal-ta"
-        value={standards}
-        onChange={e => setStandards(e.target.value)}
-        placeholder="Paste relevant standards or leave blank"
-        style={{ minHeight: 60 }}
-      />
+      {/* Dynamic standards picker — appears once grade + subject are selected */}
+      {standardGroups.length > 0 && (
+        <div style={{ marginTop: "1.25rem" }}>
+          <label className="ws-modal-label" style={{ marginBottom: 4 }}>
+            Standards alignment
+            <span style={{ fontWeight: 400, color: "var(--t3)", marginLeft: 6, textTransform: "none", letterSpacing: 0 }}>
+              — optional
+            </span>
+          </label>
+          <p style={{ fontSize: 11, color: "var(--t3)", marginBottom: 8, lineHeight: 1.5 }}>
+            Select any standards this lesson should address.
+            {selectedStandards.length > 0 && (
+              <strong style={{ color: "var(--nv)", marginLeft: 4 }}>
+                {selectedStandards.length} selected
+              </strong>
+            )}
+          </p>
+          {standardGroups.map(group => (
+            <div key={group.label} className="lif-std-group">
+              <p className="lif-std-group-label">{group.label}</p>
+              {group.standards.map(std => {
+                const isChecked = selectedStandards.some(s => s.code === std.code)
+                return (
+                  <label key={std.code} className={`lif-std-item${isChecked ? " checked" : ""}`}>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => toggleStandard(std)}
+                    />
+                    <span>
+                      <span className="lif-std-code">{std.code}</span>
+                      <span className="lif-std-desc"> — {std.description}</span>
+                    </span>
+                  </label>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Prior feedback (optional) */}
-      <label className="ws-modal-label" htmlFor="intake-feedback">Prior feedback (optional)</label>
+      <label
+        className="ws-modal-label"
+        htmlFor="intake-feedback"
+        style={{ marginTop: "1.25rem" }}
+      >
+        Prior experience with this topic
+        <span style={{ fontWeight: 400, color: "var(--t3)", marginLeft: 6, textTransform: "none", letterSpacing: 0 }}>
+          — optional
+        </span>
+      </label>
       <textarea
         id="intake-feedback"
         className="ws-modal-ta"
         value={priorFeedback}
         onChange={e => setPriorFeedback(e.target.value)}
-        placeholder="What worked or didn't work last time teaching this?"
+        placeholder="What worked or didn't work last time? Any student misconceptions to watch for?"
         style={{ minHeight: 60 }}
       />
 
