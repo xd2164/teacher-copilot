@@ -11,6 +11,8 @@ const FILTER_OPTIONS = [
   { id: "std",  label: "Standards"       },
   { id: "fb2",  label: "Lesson feedback" },
   { id: "pol",  label: "AI policy"       },
+  { id: "ev",   label: "Evidence"        },
+  { id: "mem",  label: "Memory"          },
 ]
 
 const DOC_FILTER_MAP: Record<string, string> = {
@@ -19,6 +21,7 @@ const DOC_FILTER_MAP: Record<string, string> = {
   standard:             "std",
   prior_feedback:       "fb2",
   policy:               "pol",
+  reflection:           "ev",
 }
 
 const DOC_DETAILS: Record<string, { pageInfo: string; sourceDate: string; lessonCount: string; badgeClass: "tl" | "nv" }> = {
@@ -27,6 +30,7 @@ const DOC_DETAILS: Record<string, { pageInfo: string; sourceDate: string; lesson
   "doc-3": { pageInfo: "PDF · 8 pages",   sourceDate: "Updated Sep 2024",   lessonCount: "5 lessons",  badgeClass: "tl" },
   "doc-4": { pageInfo: "PDF · 24 pages",  sourceDate: "AI4K12 Initiative",  lessonCount: "2 lessons",  badgeClass: "tl" },
   "doc-5": { pageInfo: "PDF · 18 pages",  sourceDate: "NGSS Lead States",   lessonCount: "Not yet used", badgeClass: "nv" },
+  "doc-6": { pageInfo: "CSV · 48 rows",   sourceDate: "Updated Jan 2025",   lessonCount: "2 lessons",  badgeClass: "nv" as const },
 }
 
 function getDocType(sourceType: string): { label: string; iconClass: "pdf" | "doc" } {
@@ -37,8 +41,31 @@ function getDocType(sourceType: string): { label: string; iconClass: "pdf" | "do
     case "ai_literacy_framework": return { label: "AI Literacy Framework",iconClass: "pdf" }
     case "standard":              return { label: "Academic Standards",   iconClass: "pdf" }
     case "upload":                return { label: "Uploaded Resource",    iconClass: "doc" }
+    case "reflection":            return { label: "Evidence Log",         iconClass: "doc" }
     default:                      return { label: sourceType,             iconClass: "doc" }
   }
+}
+
+const EXTRA_DOCS: KnowledgeDocument[] = [
+  {
+    id: "doc-6",
+    fileName: "Classroom Evidence Log — Unit 2.csv",
+    sourceType: "reflection" as const,
+    status: "ready" as const,
+    gradeBand: "6-8",
+    subject: "Science",
+    trustLevel: "high",
+    includeInSearch: true,
+  }
+]
+
+const DOC_PREVIEW_DATA: Record<string, { summary: string; memoryContext: string; relatedLessons: string[]; howUsed: string; evidenceValue: string }> = {
+  "doc-1": { summary: "Full curriculum map for 6th grade science including weather systems, data patterns, and evidence-based explanations.", memoryContext: "Students compare models, collect evidence, and explain uncertainty.", relatedLessons: ["Can Data Predict Tomorrow's Weather?", "AI and Weather Forecasting"], howUsed: "Aligns lesson plans to unit goals and suggests evidence-based explanations.", evidenceValue: "High — used to align all lesson objectives and formative checks." },
+  "doc-2": { summary: "Teacher feedback from the spring weather unit including what students found confusing and what activities worked.", memoryContext: "Students understood prediction but struggled to explain why forecasts can differ.", relatedLessons: ["Can Data Predict Tomorrow's Weather?"], howUsed: "Suggests additional uncertainty activities and formative checks in future lessons.", evidenceValue: "High — directly informs next instructional move recommendations." },
+  "doc-3": { summary: "School AI policy for Green Valley Middle School covering student AI use, disclosure, and responsible use.", memoryContext: "Students may use teacher-approved AI demonstrations, but final reasoning must be their own.", relatedLessons: ["Can Data Predict Tomorrow's Weather?", "Bias in Facial Recognition", "Recommendation Systems"], howUsed: "Adds responsible-use boundaries and disclosure language to lessons.", evidenceValue: "Medium — used for compliance and ethics framing." },
+  "doc-4": { summary: "Day of AI middle school framework covering AI in daily life, limitations, and the importance of human judgment.", memoryContext: "Lessons should include examples of AI in daily life, limitations, and human judgment.", relatedLessons: ["Bias in Facial Recognition", "Recommendation Systems"], howUsed: "Adds age-appropriate AI literacy connections and reflection questions.", evidenceValue: "Medium — used for AI literacy framing and discussion prompts." },
+  "doc-5": { summary: "NGSS performance expectations for grade 6 with emphasis on evidence-based explanations and data interpretation.", memoryContext: "Emphasize evidence-based explanations and data interpretation.", relatedLessons: [], howUsed: "Aligns lesson objectives, formative checks, and exit tickets to science standards.", evidenceValue: "High — used to verify standards alignment before lessons are finalized." },
+  "doc-6": { summary: "Exit ticket and observation data from Unit 2 showing student responses to prediction and uncertainty questions.", memoryContext: "Exit tickets show students need support distinguishing prediction from certainty.", relatedLessons: ["Can Data Predict Tomorrow's Weather?", "AI and Weather Forecasting"], howUsed: "Feeds the Teacher Decision Dashboard and recommends next instructional moves.", evidenceValue: "High — primary source for the decision dashboard recommendations." },
 }
 
 const RECENT_LESSONS = [
@@ -51,7 +78,7 @@ export default function LibraryPage() {
   const [activeFilter, setActiveFilter]     = useState("all")
   const [selectedDocId, setSelectedDocId]   = useState<string | null>(null)
 
-  const allDocs  = DEMO_DOCUMENTS
+  const allDocs  = [...DEMO_DOCUMENTS, ...EXTRA_DOCS]
   const filtered = allDocs.filter(d => {
     if (activeFilter === "all") return true
     return DOC_FILTER_MAP[d.sourceType] === activeFilter
@@ -139,10 +166,32 @@ export default function LibraryPage() {
                 <p className="sb-ilbl">Details</p>
                 <p className="sb-ival">{DOC_DETAILS[selectedDoc.id]?.pageInfo ?? "—"}</p>
               </div>
-              <div className="sb-iblk">
-                <p className="sb-ilbl">Source / date</p>
-                <p className="sb-ival">{DOC_DETAILS[selectedDoc.id]?.sourceDate ?? "—"}</p>
-              </div>
+              {DOC_PREVIEW_DATA[selectedDoc.id] && (
+                <>
+                  <div className="lib-preview-section">
+                    <p className="lib-preview-label">Memory / context extracted</p>
+                    <p className="lib-preview-val">{DOC_PREVIEW_DATA[selectedDoc.id].memoryContext}</p>
+                  </div>
+                  <div className="lib-preview-section">
+                    <p className="lib-preview-label">How the co-pilot uses it</p>
+                    <p className="lib-preview-val">{DOC_PREVIEW_DATA[selectedDoc.id].howUsed}</p>
+                  </div>
+                  <div className="lib-preview-section">
+                    <p className="lib-preview-label">Evidence value</p>
+                    <p className="lib-preview-val">{DOC_PREVIEW_DATA[selectedDoc.id].evidenceValue}</p>
+                  </div>
+                  {DOC_PREVIEW_DATA[selectedDoc.id].relatedLessons.length > 0 && (
+                    <div className="lib-preview-section">
+                      <p className="lib-preview-label">Related lessons</p>
+                      <div>
+                        {DOC_PREVIEW_DATA[selectedDoc.id].relatedLessons.map(l => (
+                          <span key={l} className="lib-preview-tag">{l}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
               <Link
                 href="/lesson/new"
                 className="ws-btn cta"
@@ -153,7 +202,7 @@ export default function LibraryPage() {
             </>
           ) : (
             <p style={{ fontSize: 12, color: "var(--t3)", fontStyle: "italic", lineHeight: 1.6 }}>
-              Click any resource card to preview details and see which lessons use it.
+              Click any resource card to preview details and see how it informs future lessons.
             </p>
           )}
 
