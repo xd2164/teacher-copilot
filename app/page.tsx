@@ -2,7 +2,7 @@ import React from "react"
 import Link from "next/link"
 import { Pencil, Sparkles, ArrowRight, Plus, BookOpen, UserX, Download,
          Brain, Users, BarChart2, Layout, Shield, Eye, Lock, BookMarked,
-         CheckCircle } from "lucide-react"
+         CheckCircle, FileText } from "lucide-react"
 
 const WORKFLOW_STEPS = [
   { key: "plan",     label: "Plan",     sub: "Design your lesson",           cls: "plan" },
@@ -17,6 +17,7 @@ const PLATFORM_LAYERS = [
   { icon: Brain,     cls: "memory",   title: "Teacher Memory",                    desc: "The system remembers teacher-approved reflections, classroom context, prior misconceptions, and what instructional strategies worked before." },
   { icon: Users,     cls: "simulate", title: "Synthetic Student Simulation",      desc: "Teachers can test lessons with synthetic learner profiles before class to identify likely confusion points, unclear prompts, and supports to add." },
   { icon: BarChart2, cls: "evidence", title: "Evidence and Decision Dashboard",   desc: "Teacher reflections and classroom outcomes become structured evidence that answers: \"What should I do next?\" — with pedagogy rationale." },
+  { icon: FileText,  cls: "assess",   title: "Writing & Authentic Assessment",    desc: "Teachers design writing assignments with AI-use policies, rubrics, and reflection questions, then review Humanly process certificates to see how students actually wrote — not just what they submitted." },
 ]
 
 const SAMPLE_LESSONS = [
@@ -48,6 +49,14 @@ const RESPONSIBLE_USE = [
   { icon: UserX,  title: "No student accounts required",   desc: "The prototype supports teacher-led AI literacy activities without requiring students to log into AI tools." },
   { icon: Shield, title: "Age-appropriate AI literacy",    desc: "Lessons connect AI concepts to everyday examples, classroom discussion, and student reasoning — not technical jargon." },
   { icon: Lock,   title: "Editable classroom memory",      desc: "Memory is visible, teacher-approved, and can be revised or cleared at any time. Teachers control what the system remembers." },
+]
+
+const HUMANLY_ROWS = [
+  { layer: "Assignment design",  cop: "Generates writing prompt, AI-use policy, rubric, and reflection questions", hum: "Receives task setup, enforces rules, provides source PDFs" },
+  { layer: "AI policy",          cop: "Helps teacher choose off / polish / brainstorm / chat / full-access", hum: "Enforces AI and paste rules in the writing environment" },
+  { layer: "Student writing",    cop: "Provides age-appropriate guidance and reflection scaffolds", hum: "Tracks typing, paste, revision, and AI use in real time" },
+  { layer: "Review",             cop: "Summarizes class writing patterns, flags coaching needs", hum: "Generates certificate with session log, replay, and anomaly signals" },
+  { layer: "AI literacy",        cop: "Turns writing process into a reflection and classroom discussion", hum: "Shows students how they used AI — not just the final output" },
 ]
 
 const MEMORY_CHIPS = [
@@ -89,8 +98,9 @@ export default function HomePage() {
           <Link href="/lessons" className="lp-nav-link lp-nav-ghost">Sample Lessons</Link>
           <Link href="/library" className="lp-nav-link lp-nav-ghost">Library</Link>
           <Link href="/dashboard" className="lp-nav-link lp-nav-ghost">Dashboard</Link>
+          <Link href="/assignment/new" className="lp-nav-link lp-nav-ghost">Assignments</Link>
           <Link href="/lesson/new" className="lp-nav-link primary">
-            Start planning <ArrowRight className="w-[14px] h-[14px]" aria-hidden="true" />
+            Plan lesson <ArrowRight className="w-[14px] h-[14px]" aria-hidden="true" />
           </Link>
         </div>
       </nav>
@@ -103,18 +113,19 @@ export default function HomePage() {
             Built for K–12 educators
           </div>
           <h1 className="lp-h1" id="hero-heading">
-            Help teachers make <em>better instructional decisions</em> with AI
+            Design AI-era learning — <em>and prove students actually did it</em>
           </h1>
           <p className="lp-hero-p">
             Teacher Co-Pilot combines lesson planning, classroom memory, synthetic student testing,
-            and evidence-informed coaching so K–12 educators can continuously improve teaching practice.
+            and authentic writing assessment so K–12 educators can make better instructional decisions
+            and show how students learn — not just what they submit.
           </p>
           <div className="lp-hero-actions">
-            <Link href="/lesson/new" className="lp-btn primary">
-              <Plus className="w-[14px] h-[14px]" aria-hidden="true" /> Start planning
+            <Link href="/assignment/new" className="lp-btn primary">
+              <FileText className="w-[14px] h-[14px]" aria-hidden="true" /> Create assignment
             </Link>
-            <Link href="/lessons" className="lp-btn ghost">
-              View sample lessons
+            <Link href="/lesson/new" className="lp-btn ghost">
+              <Plus className="w-[14px] h-[14px]" aria-hidden="true" /> Plan a lesson
             </Link>
           </div>
 
@@ -171,7 +182,7 @@ export default function HomePage() {
           <h2 className="lp-section-title" id="platform-heading">From lesson planning to instructional intelligence</h2>
           <p className="lp-section-sub">
             Most AI tools help teachers generate content. Teacher Co-Pilot helps teachers improve
-            instructional decisions over time — connecting planning, memory, simulation, and evidence.
+            instructional decisions over time — connecting planning, memory, simulation, evidence, and authentic writing assessment.
           </p>
           <div className="lp-platform-grid">
             {PLATFORM_LAYERS.map(({ icon: Icon, cls, title, desc }) => (
@@ -258,6 +269,52 @@ export default function HomePage() {
                 <p>{desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <hr className="lp-divider" />
+
+        {/* Humanly integration */}
+        <section className="lp-section" aria-labelledby="humanly-heading">
+          <p className="lp-eyebrow" aria-hidden="true">Works with Humanly</p>
+          <h2 className="lp-section-title" id="humanly-heading">From assignment design to process proof</h2>
+          <p className="lp-section-sub">
+            Teacher Co-Pilot is the instructional design layer. Humanly is the trusted writing layer.
+            Together they answer the question every teacher now faces: not &ldquo;Did AI write this?&rdquo; but
+            &ldquo;What did the student understand, decide, revise, and learn while using AI?&rdquo;
+          </p>
+          <div className="lp-hm-section">
+            <p className="lp-hm-eyebrow">Integration overview</p>
+            <h3 className="lp-hm-h">Process beats prediction.</h3>
+            <p className="lp-hm-sub">
+              Humanly moves away from unreliable AI-detection guessing and toward evidence of
+              how the work happened — certificates, session logs, typing ratios, and revision patterns.
+            </p>
+            <table className="lp-hm-table">
+              <thead>
+                <tr>
+                  <th>Layer</th>
+                  <th>Teacher Co-Pilot</th>
+                  <th>Humanly</th>
+                </tr>
+              </thead>
+              <tbody>
+                {HUMANLY_ROWS.map(row => (
+                  <tr key={row.layer}>
+                    <td><span className="lp-hm-layer">{row.layer}</span></td>
+                    <td><span className="lp-hm-cop">{row.cop}</span></td>
+                    <td><span className="lp-hm-hum">{row.hum}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="lp-hm-cta">
+              <Link href="/assignment/new" className="lp-btn primary" style={{ fontSize: 13 }}>
+                <FileText className="w-[13px] h-[13px]" aria-hidden="true" /> Create assignment packet
+              </Link>
+              <span className="lp-hm-badge">No backend required</span>
+              <span className="lp-hm-badge">Works with Humanly free tier</span>
+            </div>
           </div>
         </section>
 
@@ -372,14 +429,19 @@ export default function HomePage() {
         {/* CTA */}
         <div className="lp-cta-wrap">
           <div className="lp-cta-block">
-            <h2>Ready to improve your instructional practice?</h2>
+            <h2>Ready to design AI-era learning?</h2>
             <p>
-              Start with a grade level, a topic, or a classroom question.<br />
-              The co-pilot turns it into a thoughtful, evidence-informed lesson plan.
+              Create a writing assignment with a built-in AI policy and process certificate,
+              or start with a lesson plan — both take less than two minutes.
             </p>
-            <Link href="/lesson/new" className="lp-btn primary">
-              <Pencil className="w-[14px] h-[14px]" aria-hidden="true" /> Start planning
-            </Link>
+            <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/assignment/new" className="lp-btn primary">
+                <FileText className="w-[14px] h-[14px]" aria-hidden="true" /> Create assignment
+              </Link>
+              <Link href="/lesson/new" className="lp-btn ghost">
+                <Pencil className="w-[14px] h-[14px]" aria-hidden="true" /> Plan a lesson
+              </Link>
+            </div>
           </div>
         </div>
       </main>
@@ -387,13 +449,14 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="lp-footer">
         <div className="lp-footer-row">
-          <span>Teacher Co-Pilot · Plan · Simulate · Teach · Reflect · Improve</span>
+          <span>Teacher Co-Pilot · Plan · Simulate · Teach · Reflect · Improve · Assess</span>
           <span>Built for K–12 educators</span>
         </div>
         <div style={{ display: "flex", gap: "1.25rem", marginTop: 4 }}>
           <Link href="/lessons" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 11 }}>Sample Lessons</Link>
           <Link href="/library" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 11 }}>Library</Link>
           <Link href="/dashboard" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 11 }}>Dashboard</Link>
+          <Link href="/assignment/new" style={{ color: "var(--text-tertiary)", textDecoration: "none", fontSize: 11 }}>Assignments</Link>
         </div>
         <p className="lp-footer-cite">
           Lyublinskaya, I., &amp; Du, X. (2025). <em>Teaching AI literacy across the curriculum: A K–12 handbook.</em> Corwin.
