@@ -1453,6 +1453,116 @@ body {
 .lib-preview-val { font-size: 12px; color: var(--tx); line-height: 1.5; }
 .lib-preview-tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; background: var(--nvl); color: var(--nv); margin-right: 3px; margin-bottom: 3px; }
 
+/* ── Library document viewer ──────────────────────────── */
+.lib-viewer {
+  background: var(--wh); border: 1.5px solid var(--nvm);
+  border-radius: 12px; margin-top: 1.375rem; overflow: hidden;
+  animation: lib-viewer-in .15s ease-out;
+}
+@keyframes lib-viewer-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.lib-viewer-head {
+  background: var(--nvl); border-bottom: 1px solid var(--nvm);
+  padding: .875rem 1.25rem;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+}
+.lib-viewer-head-left { min-width: 0; }
+.lib-viewer-title {
+  font-family: var(--font-lora,'Lora',serif);
+  font-size: 15px; font-weight: 700; color: var(--tx);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
+}
+.lib-viewer-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.lib-viewer-close {
+  background: none; border: 1px solid var(--nvm); color: var(--nv);
+  border-radius: 4px; padding: 4px 10px; font-size: 11px; font-weight: 500;
+  cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0;
+  transition: background .1s;
+}
+.lib-viewer-close:hover { background: var(--nv); color: #fff; }
+
+.lib-viewer-body { display: grid; grid-template-columns: 1fr 280px; }
+
+/* Document content pane */
+.lib-doc-content {
+  padding: 1.25rem 1.5rem; border-right: 1px solid var(--bd);
+  overflow-y: auto; max-height: 560px;
+  font-size: 13px; line-height: 1.7; color: var(--t2);
+}
+.lib-doc-content h2 {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--nv); margin: 1.25rem 0 .5rem;
+  border-bottom: 1px solid var(--bd); padding-bottom: 4px;
+}
+.lib-doc-content h2:first-child { margin-top: 0; }
+.lib-doc-content h3 { font-size: 12.5px; font-weight: 600; color: var(--tx); margin: .75rem 0 .25rem; }
+.lib-doc-content p  { margin-bottom: .375rem; }
+.lib-doc-content ul { list-style: disc; padding-left: 1.1rem; margin-bottom: .5rem; }
+.lib-doc-content li { margin-bottom: 3px; }
+.lib-doc-content strong { font-weight: 600; color: var(--tx); }
+.lib-doc-hl {
+  background: var(--nvl); border-left: 3px solid var(--nv);
+  padding: 8px 12px; margin: .625rem 0; font-style: italic;
+  color: var(--nv); border-radius: 0 4px 4px 0; font-size: 12.5px; line-height: 1.6;
+}
+.lib-doc-ok { color: var(--tl); }
+.lib-doc-no { color: var(--rd); }
+.lib-doc-week { font-size: 11px; font-weight: 700; color: var(--nv); margin: .625rem 0 .25rem; letter-spacing: .04em; }
+.lib-doc-row { display: flex; gap: 7px; padding: 3px 0; font-size: 12.5px; align-items: flex-start; }
+.lib-doc-row::before { content: '–'; color: var(--t3); flex-shrink: 0; }
+.lib-doc-row.star { color: var(--nv); font-weight: 500; }
+.lib-doc-row.star::before { content: '★'; color: var(--nv); }
+.lib-doc-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: .5rem 0; }
+.lib-doc-table th { background: var(--bg2); padding: 5px 9px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--t2); border-bottom: 1px solid var(--bd2); }
+.lib-doc-table td { padding: 5px 9px; border-bottom: 1px solid var(--bd); vertical-align: top; }
+.lib-doc-table tr:last-child td { border-bottom: none; }
+.lib-doc-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.lib-doc-badge.ok { background: var(--tll); color: var(--tl); }
+.lib-doc-badge.warn { background: var(--rdl); color: var(--rd); }
+.lib-doc-badge.info { background: var(--nvl); color: var(--nv); }
+.lib-doc-badge.na { background: var(--bg2); color: var(--t3); }
+.lib-doc-note { background: var(--aml); border-radius: 5px; padding: 8px 12px; font-size: 12px; color: var(--am); line-height: 1.55; margin: .5rem 0; }
+.lib-doc-note strong { color: var(--am); }
+
+/* Co-pilot analysis pane */
+.lib-doc-analysis {
+  padding: 1.125rem; background: var(--bg);
+  overflow-y: auto; max-height: 560px;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.lib-analysis-block { }
+.lib-analysis-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--t3); margin-bottom: 5px;
+}
+.lib-analysis-val { font-size: 12.5px; color: var(--t2); line-height: 1.55; }
+.lib-analysis-mem {
+  background: var(--nvl); border-radius: 6px; padding: 9px 11px;
+  font-size: 12.5px; color: var(--nv); line-height: 1.55; font-style: italic;
+}
+.lib-analysis-tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; background: var(--nvl); color: var(--nv); margin-right: 3px; margin-bottom: 3px; }
+
+/* Library page full-width layout override */
+.lib-page { display: flex; flex-direction: column; min-height: calc(100vh - 48px); }
+.lib-main-full { flex: 1; overflow-y: auto; padding: 1.5rem 2rem 3rem; background: var(--bg); max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* Recent lessons row at bottom */
+.lib-recent-row {
+  border-top: 1px solid var(--bd); padding: .875rem 2rem;
+  background: var(--wh); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+}
+.lib-recent-label { font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--t3); flex-shrink: 0; }
+.lib-recent-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--t2); }
+.lib-recent-item svg { width: 12px; height: 12px; color: var(--t3); }
+
+@media (max-width: 700px) {
+  .lib-viewer-body { grid-template-columns: 1fr; }
+  .lib-doc-content { border-right: none; border-bottom: 1px solid var(--bd); max-height: 360px; }
+  .lib-main-full { padding: 1.25rem 1rem 2rem; }
+}
+
 /* ── Responsive ───────────────────────────────────────── */
 @media (max-width: 800px) {
   .nl-plan-split { grid-template-columns: 1fr; }
